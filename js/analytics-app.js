@@ -9,7 +9,7 @@ async function initAnalyticsTab() {
     setText('an-spam', '-');
     setText('an-rate', '-');
     var chart = document.getElementById('analytics-chart');
-    if (chart) chart.innerHTML = '<p class="auth-card-desc">Sign in to load charts.</p>';
+    if (chart) chart.innerHTML = '<p class="fb-empty-msg">Sign in to load charts.</p>';
     return;
   }
   fbSetHidden(gate, true);
@@ -32,7 +32,7 @@ async function analyticsRefresh() {
   var qs = '?days=30';
   if (projectId) qs += '&projectId=' + encodeURIComponent(projectId);
   var chart = document.getElementById('analytics-chart');
-  if (chart) chart.innerHTML = '<p class="auth-card-desc">Loading...</p>';
+  if (chart) chart.innerHTML = '<p class="fb-empty-msg">Loading...</p>';
   try {
     var data = await fbFetch('/v1/analytics' + qs);
     window._fbAnalyticsCache = data;
@@ -44,26 +44,31 @@ async function analyticsRefresh() {
     setText('an-rate', total ? Math.round((spam / total) * 100) + '%' : '0%');
     await renderAnalyticsChart(data.byDay || []);
   } catch (e) {
-    if (chart) chart.innerHTML = '<p class="auth-card-desc">' + (e.message || 'Failed to load') + '</p>';
+    if (chart) chart.innerHTML = '<p class="fb-empty-msg">' + (e.message || 'Failed to load') + '</p>';
+    var card = document.getElementById('analytics-chart-card');
+    if (card) card.classList.add('is-empty');
     showToast(e.message || 'Analytics failed', 'error');
   }
 }
 
 async function renderAnalyticsChart(byDay) {
   var el = document.getElementById('analytics-chart');
+  var card = document.getElementById('analytics-chart-card');
   if (!el) return;
   el.classList.remove('has-chart');
+  if (card) card.classList.add('is-empty');
   el.innerHTML = '';
   if (!byDay.length) {
     el.innerHTML =
-      '<p class="auth-card-desc">No submissions in this range yet. Create a project and POST to its endpoint.</p>';
+      '<p class="fb-empty-msg">No submissions in this range yet. Create a project and POST to its endpoint.</p>';
     return;
   }
   el.classList.add('has-chart');
+  if (card) card.classList.remove('is-empty');
   await ensureLib('d3');
   var d3 = window.d3;
   var width = Math.max(280, el.clientWidth || 640);
-  var height = 220;
+  var height = 200;
   var margin = { top: 16, right: 16, bottom: 32, left: 40 };
   var data = byDay.map(function (d) {
     return {

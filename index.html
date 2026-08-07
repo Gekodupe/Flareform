@@ -291,7 +291,7 @@
             <button type="button" class="auth-primary" onclick="switchToTab('6')">Account</button>
           </div>
         </div>
-        <div id="analytics-body">
+        <div id="analytics-body" class="fb-panel">
           <div class="fb-toolbar">
             <label class="fb-field-inline">
               <span>Project</span>
@@ -302,16 +302,16 @@
             <button type="button" class="auth-primary" onclick="analyticsRefresh()">Refresh</button>
             <button type="button" class="secondary-btn" onclick="analyticsExportCsv()">Export CSV</button>
           </div>
-          <div class="fb-chart-card">
-            <h2>Submissions over time</h2>
-            <div id="analytics-chart" class="fb-chart" role="img" aria-label="Submissions over time chart">
-              <p class="auth-card-desc">Loading...</p>
-            </div>
-          </div>
-          <div class="fb-stat-grid" style="margin-top: 16px;">
+          <div class="fb-stat-grid fb-stat-grid--3">
             <div class="fb-stat"><span class="fb-stat-label">Total</span><span class="fb-stat-value" id="an-total">-</span></div>
             <div class="fb-stat"><span class="fb-stat-label">Spam</span><span class="fb-stat-value" id="an-spam">-</span></div>
             <div class="fb-stat"><span class="fb-stat-label">Spam rate</span><span class="fb-stat-value" id="an-rate">-</span></div>
+          </div>
+          <div id="analytics-chart-card" class="fb-chart-card is-empty">
+            <h2>Submissions over time</h2>
+            <div id="analytics-chart" class="fb-chart" role="img" aria-label="Submissions over time chart">
+              <p class="fb-empty-msg">Loading...</p>
+            </div>
           </div>
         </div>
       </section>
