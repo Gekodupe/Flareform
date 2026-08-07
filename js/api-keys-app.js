@@ -205,7 +205,7 @@ async function apiKeysCreate() {
     if (secretEl) secretEl.value = secret;
     apiKeysSetHidden('api-key-reveal', !secret);
     if (labelEl) labelEl.value = '';
-    showToast(res.warning || 'API key created — copy it now', 'success');
+    showToast(res.warning || 'API key created - copy it now', 'success');
     await apiKeysRefreshAccount();
   } catch (e) {
     showToast(e.message || 'Could not create key', 'error');

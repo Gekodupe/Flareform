@@ -1,6 +1,6 @@
 # Flareform
 
-Open-source **Formspree alternative** — form endpoints, error logs, image uploads, inbox, and analytics.
+Open-source **Formspree alternative** - form endpoints, error logs, image uploads, inbox, and analytics.
 
 - **Live:** [https://flareform.pages.dev](https://flareform.pages.dev)
 - **UI repo:** [Gekodupe/Flareform](https://github.com/Gekodupe/Flareform)

@@ -50,13 +50,14 @@ function logsQuery(limit) {
 async function initLogsTab() {
   var gate = document.getElementById('logs-auth-gate');
   var workspace = document.getElementById('logs-workspace');
+  fbLoadSession();
   if (!fbIsSignedIn()) {
-    if (gate) gate.hidden = false;
-    if (workspace) workspace.hidden = true;
+    fbSetHidden(gate, false);
+    fbSetHidden(workspace, true);
     return;
   }
-  if (gate) gate.hidden = true;
-  if (workspace) workspace.hidden = false;
+  fbSetHidden(gate, true);
+  fbSetHidden(workspace, false);
   await logsFillProjectSelect();
   ['logs-project', 'logs-filter', 'logs-sort'].forEach(function (id) {
     var el = document.getElementById(id);

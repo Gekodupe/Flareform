@@ -42,6 +42,17 @@ function fbIsSignedIn() {
   return !!fbSession;
 }
 
+function fbSetHidden(el, hidden) {
+  if (!el) return;
+  if (hidden) {
+    el.setAttribute('hidden', '');
+    el.hidden = true;
+  } else {
+    el.removeAttribute('hidden');
+    el.hidden = false;
+  }
+}
+
 async function fbFetch(path, opts) {
   opts = opts || {};
   fbLoadSession();

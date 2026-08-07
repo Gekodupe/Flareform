@@ -1,9 +1,10 @@
 async function initAnalyticsTab() {
   var gate = document.getElementById('analytics-auth-gate');
   var body = document.getElementById('analytics-body');
+  fbLoadSession();
   if (!fbIsSignedIn()) {
-    if (gate) gate.hidden = false;
-    if (body) body.hidden = true;
+    fbSetHidden(gate, false);
+    fbSetHidden(body, true);
     setText('an-total', '-');
     setText('an-spam', '-');
     setText('an-rate', '-');
@@ -11,8 +12,8 @@ async function initAnalyticsTab() {
     if (chart) chart.innerHTML = '<p class="auth-card-desc">Sign in to load charts.</p>';
     return;
   }
-  if (gate) gate.hidden = true;
-  if (body) body.hidden = false;
+  fbSetHidden(gate, true);
+  fbSetHidden(body, false);
   await fillProjectSelect('analytics-project');
   var project = document.getElementById('analytics-project');
   if (project && !project.dataset.bound) {

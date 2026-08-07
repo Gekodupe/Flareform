@@ -7,7 +7,7 @@ Auth for account routes:
 - Session: `Authorization: Bearer sess_...` (from login/register)
 - API key: `Authorization: Bearer ff_live_...` (create keys in the **API** tab)
 
-Form and log ingest (`/f/{id}`, `/l/{id}`) stay public — no API key required.
+Form and log ingest (`/f/{id}`, `/l/{id}`) stay public - no API key required.
 
 ## Health
 
@@ -32,7 +32,7 @@ Form and log ingest (`/f/{id}`, `/l/{id}`) stay public — no API key required.
 |--------|------|-------|
 | GET | `/v1/account` | Plan, usage, keys (prefixes only) |
 | GET | `/v1/account/keys` | List keys |
-| POST | `/v1/account/keys` | `{ "label": "Production" }` — returns full key once |
+| POST | `/v1/account/keys` | `{ "label": "Production" }` - returns full key once |
 | DELETE | `/v1/account/keys/{id}` | Revoke |
 
 Email must be verified to create keys. Limits: Free 2 · Starter 5 · Pro 10.
@@ -99,7 +99,7 @@ Sort values: `newest`, `oldest`, `project`, `score` (inbox) / `count` (logs), `l
 
 ## Files
 
-`GET /v1/files/{img_id}` — public image bytes from a submission.
+`GET /v1/files/{img_id}` - public image bytes from a submission.
 
 ## Analytics
 

@@ -1,7 +1,7 @@
 {
   "name": "@flareform/flareform",
   "version": "0.1.0",
-  "description": "Flareform — open-source Formspree alternative on Cloudflare (forms, inbox, analytics).",
+  "description": "Flareform - open-source Formspree alternative on Cloudflare (forms, inbox, analytics).",
   "homepage": "https://flareform.pages.dev",
   "repository": {
     "type": "git",

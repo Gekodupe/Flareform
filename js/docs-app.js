@@ -16,10 +16,9 @@ var docsNavReady = false;
 var docsFrameReady = false;
 
 function docsFrameUrl(hash) {
-  var base = new URL('docs/index.html', location.href).href;
   var target = hash || '#/';
   if (target.charAt(0) !== '#') target = '#' + target;
-  return base + target;
+  return location.origin + '/docs/index.html' + target;
 }
 
 function docsSetActive(hash) {

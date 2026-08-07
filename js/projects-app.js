@@ -1,13 +1,26 @@
 async function initProjectsTab() {
   var gate = document.getElementById('projects-auth-gate');
   var workspace = document.getElementById('projects-workspace');
+  fbLoadSession();
   if (!fbIsSignedIn()) {
-    if (gate) gate.hidden = false;
-    if (workspace) workspace.hidden = true;
+    if (gate) {
+      gate.removeAttribute('hidden');
+      gate.hidden = false;
+    }
+    if (workspace) {
+      workspace.setAttribute('hidden', '');
+      workspace.hidden = true;
+    }
     return;
   }
-  if (gate) gate.hidden = true;
-  if (workspace) workspace.hidden = false;
+  if (gate) {
+    gate.setAttribute('hidden', '');
+    gate.hidden = true;
+  }
+  if (workspace) {
+    workspace.removeAttribute('hidden');
+    workspace.hidden = false;
+  }
   var notify = document.getElementById('project-notify');
   if (notify && !notify.value && fbEmail) notify.value = fbEmail;
   var sort = document.getElementById('projects-sort');
@@ -46,7 +59,7 @@ async function projectsCreate() {
         logsEnabled: logsOn
       }
     });
-    showToast('Project created — copy your endpoints below', 'success');
+    showToast('Project created - copy your endpoints below', 'success');
     var nameEl = document.getElementById('project-name');
     if (nameEl) nameEl.value = '';
     await projectsRefresh();

@@ -1,13 +1,14 @@
 async function initOverviewTab() {
   var gate = document.getElementById('overview-auth-gate');
   var body = document.getElementById('overview-body');
+  fbLoadSession();
   if (!fbIsSignedIn()) {
-    if (gate) gate.hidden = false;
-    if (body) body.hidden = true;
+    fbSetHidden(gate, false);
+    fbSetHidden(body, true);
     return;
   }
-  if (gate) gate.hidden = true;
-  if (body) body.hidden = false;
+  fbSetHidden(gate, true);
+  fbSetHidden(body, false);
 
   try {
     var data = await fbFetch('/v1/overview');
@@ -48,8 +49,8 @@ async function initOverviewTab() {
       .join('');
   } catch (e) {
     if (e.status === 401) {
-      if (gate) gate.hidden = false;
-      if (body) body.hidden = true;
+      fbSetHidden(gate, false);
+      fbSetHidden(body, true);
       return;
     }
     showToast(e.message || 'Could not load overview', 'error');

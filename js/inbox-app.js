@@ -245,13 +245,14 @@ function escAttr(s) {
 async function initInboxTab() {
   var gate = document.getElementById('inbox-auth-gate');
   var workspace = document.getElementById('inbox-workspace');
+  fbLoadSession();
   if (!fbIsSignedIn()) {
-    if (gate) gate.hidden = false;
-    if (workspace) workspace.hidden = true;
+    fbSetHidden(gate, false);
+    fbSetHidden(workspace, true);
     return;
   }
-  if (gate) gate.hidden = true;
-  if (workspace) workspace.hidden = false;
+  fbSetHidden(gate, true);
+  fbSetHidden(workspace, false);
   await fillProjectSelect('inbox-project');
   ['inbox-filter', 'inbox-project', 'inbox-sort'].forEach(function (id) {
     var el = document.getElementById(id);

@@ -25,8 +25,8 @@ Spam-scored submissions are stored in Inbox but do not email.
 
 ## Origins & Turnstile
 
-- **Allowed origins** — comma-separated; blank = any
-- **Turnstile** — require `cf-turnstile-response` when enabled
+- **Allowed origins** - comma-separated; blank = any
+- **Turnstile** - require `cf-turnstile-response` when enabled
 
 ## AJAX / fetch
 

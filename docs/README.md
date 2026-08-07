@@ -1,13 +1,13 @@
 # Flareform
 
-**Open-source Formspree alternative** — form endpoints, error logs, inbox, email notify, and analytics on Cloudflare.
+**Open-source Formspree alternative** - form endpoints, error logs, inbox, email notify, and analytics on Cloudflare.
 
 ## What you get
 
 | Feature | Description |
 |---------|-------------|
-| Form endpoints | `POST /f/{projectId}` — HTML forms or JSON |
-| Error logs | `POST /l/{projectId}` — worryful errors, deduped |
+| Form endpoints | `POST /f/{projectId}` - HTML forms or JSON |
+| Error logs | `POST /l/{projectId}` - worryful errors, deduped |
 | Images | Multipart image uploads (separate monthly quota) |
 | Inbox & logs | Filter by project, sort, detail, CSV/JSON export |
 | API keys | Generate `ff_live_…` keys on the API tab |
