@@ -52,16 +52,18 @@ async function analyticsRefresh() {
 async function renderAnalyticsChart(byDay) {
   var el = document.getElementById('analytics-chart');
   if (!el) return;
+  el.classList.remove('has-chart');
   el.innerHTML = '';
   if (!byDay.length) {
     el.innerHTML =
       '<p class="auth-card-desc">No submissions in this range yet. Create a project and POST to its endpoint.</p>';
     return;
   }
+  el.classList.add('has-chart');
   await ensureLib('d3');
   var d3 = window.d3;
   var width = Math.max(280, el.clientWidth || 640);
-  var height = 240;
+  var height = 220;
   var margin = { top: 16, right: 16, bottom: 32, left: 40 };
   var data = byDay.map(function (d) {
     return {

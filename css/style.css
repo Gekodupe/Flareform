@@ -1134,16 +1134,17 @@ ul.info-list {
 }
 
 #s-3 p {
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--text);
-  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
 }
 
 #s-3 h2 {
-  font-size: 22px;
-  margin-top: 32px;
-  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 10px;
   color: var(--text);
 }
 
@@ -2191,6 +2192,9 @@ tr:nth-child(even) td { background: var(--surface); color: #fff !important; }
   flex-direction: column;
   gap: 14px;
   max-width: 640px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .api-panel {
@@ -2618,7 +2622,7 @@ section.docs-panel.current {
 /* ---------- Flareform dashboard panels ---------- */
 .fb-stat-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 12px;
 }
 .fb-stat {
@@ -2643,6 +2647,7 @@ section.docs-panel.current {
   flex-wrap: wrap;
   gap: 12px;
   align-items: flex-end;
+  justify-content: center;
   margin-bottom: 16px;
 }
 .fb-field-inline {
@@ -2708,7 +2713,19 @@ section.docs-panel.current {
 }
 .fb-chart {
   width: 100%;
-  min-height: 240px;
+  min-height: 0;
+}
+.fb-chart:not(:empty) {
+  min-height: 0;
+}
+.fb-chart.has-chart {
+  min-height: 220px;
+}
+.fb-chart .auth-card-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
 }
 .fb-project-card {
   margin-bottom: 12px;
@@ -2777,19 +2794,35 @@ section.docs-panel.current {
 #s-8 > .tool-intro { margin-bottom: 16px; }
 
 #s-4 > h1,
-#s-4 > .tool-intro {
+#s-4 > .tool-intro,
+#s-3 > h1,
+#s-3 > .tool-intro,
+#s-11 > h1,
+#s-11 > .tool-intro {
   text-align: center;
   max-width: 720px;
   margin-left: auto;
   margin-right: auto;
 }
-#s-4 > .auth-card:first-of-type {
-  max-width: 640px;
+#s-3 > .tool-intro,
+#s-4 > .tool-intro,
+#s-11 > .tool-intro {
+  margin-bottom: 16px;
+}
+
+#s-3 #analytics-body,
+#s-4 #projects-workspace {
+  max-width: 720px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
+
+#s-4 #projects-create,
+#s-4 .fb-project-card,
 #s-4 .fb-projects-list {
-  max-width: 720px;
+  max-width: 640px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -2797,9 +2830,7 @@ section.docs-panel.current {
 #s-1 > h1,
 #s-1 > .tool-intro,
 #s-2 > h1,
-#s-2 > .tool-intro,
-#s-3 > h1,
-#s-3 > .tool-intro {
+#s-2 > .tool-intro {
   text-align: left;
 }
 
@@ -2808,7 +2839,6 @@ section.docs-panel.current {
   cursor: not-allowed;
 }
 
-#s-4 #projects-create,
 #s-4 #projects-auth-gate,
 #s-3 #analytics-auth-gate,
 #s-2 #inbox-auth-gate,
@@ -2823,13 +2853,8 @@ section.docs-panel.current {
 #s-9 > .tool-intro {
   text-align: left;
 }
-#s-4 #projects-create {
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
-}
 #s-4 #projects-list {
-  max-width: 720px;
+  max-width: 640px;
   margin-left: auto;
   margin-right: auto;
 }
