@@ -1,0 +1,42 @@
+{
+  "name": "@flareform/flareform",
+  "version": "0.1.0",
+  "description": "Flareform — open-source Formspree alternative on Cloudflare (forms, inbox, analytics).",
+  "homepage": "https://github.com/Gekodupe/Flareform",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gekodupe/Flareform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gekodupe/Flareform/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "css/",
+    "js/",
+    "public/",
+    "index.html",
+    "404.html",
+    "robots.txt",
+    "sitemap.xml",
+    "site.webmanifest",
+    "_headers",
+    "LICENSE",
+    "README.md",
+    "site.config.json",
+    "scripts/"
+  ],
+  "scripts": {
+    "serve": "node scripts/serve.js",
+    "build": "node scripts/build.js",
+    "site-meta": "node scripts/site-meta.js",
+    "worker:dev": "npm --prefix ../../FlareformAPI run dev",
+    "worker:deploy": "npm --prefix ../../FlareformAPI run deploy",
+    "db:local": "npm --prefix ../../FlareformAPI run db:local",
+    "db:remote": "npm --prefix ../../FlareformAPI run db:remote",
+    "seed": "node scripts/seed.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

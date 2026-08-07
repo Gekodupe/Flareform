@@ -1,0 +1,21 @@
+{
+  "name": "Flareform",
+  "short_name": "Flareform",
+  "description": "Open-source Formspree alternative — form endpoints, inbox, and analytics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f7831e",
+  "icons": [
+    {
+      "src": "public/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "public/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

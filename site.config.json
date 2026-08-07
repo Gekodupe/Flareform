@@ -1,0 +1,25 @@
+{
+  "name": "Flareform",
+  "brandName": "Flareform",
+  "shortName": "Flareform",
+  "siteUrl": "https://flareform.com",
+  "description": "Flareform is an open-source Formspree alternative. Host form endpoints, error logs, inbox, and analytics on Cloudflare.",
+  "keywords": "Flareform, Formspree alternative, form endpoint, error logs, form inbox, submissions, Cloudflare, open source, self-host",
+  "contact": "https://github.com/orgs/Gekodupe",
+  "sameAs": [
+    "https://github.com/Gekodupe/Flareform",
+    "https://github.com/orgs/Gekodupe",
+    "https://flareform.com",
+    "https://x.com/blacnovadev"
+  ],
+  "publisher": {
+    "name": "Flareform",
+    "url": "https://github.com/orgs/Gekodupe"
+  },
+  "themeColor": "#f7831e",
+  "backgroundColor": "#ffffff",
+  "locale": "en_US",
+  "ogImage": "/public/icon-512.png",
+  "ogImageWidth": 512,
+  "ogImageHeight": 512
+}

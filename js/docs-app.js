@@ -1,0 +1,104 @@
+// Flareform Docs tab: docs rail + docsify iframe
+var DOCS_NAV = [
+  { label: 'Home', hash: '#/' },
+  { label: 'Quick start', hash: '#/quickstart' },
+  { label: 'API reference', hash: '#/api' },
+  { label: 'Forms & email', hash: '#/forms' },
+  { label: 'Logs', hash: '#/logs' },
+  { label: 'Images', hash: '#/images' },
+  { label: 'Self-host', hash: '#/self-host' },
+  { label: 'Plans', hash: '#/plans' },
+  { label: 'Errors', hash: '#/errors' },
+  { label: 'Security', hash: '#/security' }
+];
+
+var docsNavReady = false;
+var docsFrameReady = false;
+
+function docsFrameUrl(hash) {
+  var base = new URL('docs/index.html', location.href).href;
+  var target = hash || '#/';
+  if (target.charAt(0) !== '#') target = '#' + target;
+  return base + target;
+}
+
+function docsSetActive(hash) {
+  var current = hash || '#/';
+  document.querySelectorAll('.docs-nav-btn').forEach(function (btn) {
+    var active = btn.getAttribute('data-docs-hash') === current;
+    btn.classList.toggle('current', active);
+    btn.setAttribute('aria-current', active ? 'page' : 'false');
+  });
+}
+
+function docsNavigate(hash) {
+  var frame = document.getElementById('docs-frame');
+  if (!frame) return;
+  var target = hash || '#/';
+  if (target.charAt(0) !== '#') target = '#' + target;
+  frame.src = docsFrameUrl(target);
+  docsFrameReady = true;
+  docsSetActive(target);
+}
+
+function docsBuildNav() {
+  var list = document.getElementById('docs-nav-list');
+  if (!list || docsNavReady) return;
+  list.innerHTML = '';
+  DOCS_NAV.forEach(function (item) {
+    var li = document.createElement('li');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'docs-nav-btn';
+    btn.textContent = item.label;
+    btn.setAttribute('data-docs-hash', item.hash);
+    btn.onclick = function () {
+      docsNavigate(item.hash);
+    };
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+  docsNavReady = true;
+  docsSetActive('#/');
+}
+
+function docsEnsureFrame() {
+  var frame = document.getElementById('docs-frame');
+  if (!frame) return;
+  if (!docsFrameReady) {
+    frame.src = docsFrameUrl('#/');
+    docsFrameReady = true;
+  }
+}
+
+function initDocsTab() {
+  docsBuildNav();
+  docsEnsureFrame();
+  var shell = document.querySelector('.app-shell');
+  if (shell) shell.classList.add('docs-mode');
+  var aside = document.getElementById('docs-sidebar');
+  if (aside) {
+    aside.hidden = false;
+    aside.setAttribute('aria-hidden', 'false');
+  }
+}
+
+function teardownDocsTab() {
+  var shell = document.querySelector('.app-shell');
+  if (shell) shell.classList.remove('docs-mode');
+  var aside = document.getElementById('docs-sidebar');
+  if (aside) {
+    aside.hidden = true;
+    aside.setAttribute('aria-hidden', 'true');
+  }
+}
+
+function initApiTab() {
+  switchToTab('10', { skipHash: true });
+  docsNavigate('#/api');
+  if (location.hash !== '#docs') {
+    try {
+      history.replaceState(null, '', '#docs');
+    } catch (e) { /* ignore */ }
+  }
+}
