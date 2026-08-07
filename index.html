@@ -149,34 +149,38 @@
           </div>
         </div>
         <div id="inbox-workspace">
-        <div class="fb-toolbar">
-          <label class="fb-field-inline">
-            <span>Project</span>
-            <select id="inbox-project" class="styled-select auth-input">
-              <option value="">All projects</option>
-            </select>
-          </label>
-          <label class="fb-field-inline">
-            <span>Filter</span>
-            <select id="inbox-filter" class="styled-select auth-input">
-              <option value="all">All</option>
-              <option value="inbox">Ham</option>
-              <option value="spam">Spam</option>
-              <option value="unread">Unread</option>
-            </select>
-          </label>
-          <label class="fb-field-inline">
-            <span>Sort</span>
-            <select id="inbox-sort" class="styled-select auth-input">
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-              <option value="project">Project A-Z</option>
-              <option value="score">Spam score</option>
-            </select>
-          </label>
-          <button type="button" class="auth-primary" onclick="inboxRefresh()">Refresh</button>
-          <button type="button" class="secondary-btn" onclick="inboxExportCsv()">Export CSV</button>
-          <button type="button" class="secondary-btn" onclick="inboxExportJson()">Export JSON</button>
+        <div class="fb-toolbar-row">
+          <div class="fb-toolbar">
+            <label class="fb-field-inline">
+              <span>Project</span>
+              <select id="inbox-project" class="styled-select auth-input">
+                <option value="">All projects</option>
+              </select>
+            </label>
+            <label class="fb-field-inline">
+              <span>Filter</span>
+              <select id="inbox-filter" class="styled-select auth-input">
+                <option value="all">All</option>
+                <option value="inbox">Ham</option>
+                <option value="spam">Spam</option>
+                <option value="unread">Unread</option>
+              </select>
+            </label>
+            <label class="fb-field-inline">
+              <span>Sort</span>
+              <select id="inbox-sort" class="styled-select auth-input">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="project">Project A-Z</option>
+                <option value="score">Spam score</option>
+              </select>
+            </label>
+            <button type="button" class="auth-primary" onclick="inboxRefresh()">Refresh</button>
+          </div>
+          <div class="fb-export-actions">
+            <button type="button" class="ink-btn" onclick="inboxExportCsv()">Export CSV</button>
+            <button type="button" class="ink-btn" onclick="inboxExportJson()">Export JSON</button>
+          </div>
         </div>
         <div class="fb-inbox-layout">
           <div class="custom-table-container" style="overflow-x: auto; flex: 1;">
@@ -220,35 +224,39 @@
           </div>
         </div>
         <div id="logs-workspace">
-          <div class="fb-toolbar">
-            <label class="fb-field-inline">
-              <span>Project</span>
-              <select id="logs-project" class="styled-select auth-input">
-                <option value="">All projects</option>
-              </select>
-            </label>
-            <label class="fb-field-inline">
-              <span>Filter</span>
-              <select id="logs-filter" class="styled-select auth-input">
-                <option value="all">All</option>
-                <option value="error">Errors</option>
-                <option value="warn">Warnings</option>
-                <option value="unread">Unread</option>
-              </select>
-            </label>
-            <label class="fb-field-inline">
-              <span>Sort</span>
-              <select id="logs-sort" class="styled-select auth-input">
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="project">Project A-Z</option>
-                <option value="count">Most duplicates</option>
-                <option value="level">Level</option>
-              </select>
-            </label>
-            <button type="button" class="auth-primary" onclick="logsRefresh()">Refresh</button>
-            <button type="button" class="secondary-btn" onclick="logsExportCsv()">Export CSV</button>
-            <button type="button" class="secondary-btn" onclick="logsExportJson()">Export JSON</button>
+          <div class="fb-toolbar-row">
+            <div class="fb-toolbar">
+              <label class="fb-field-inline">
+                <span>Project</span>
+                <select id="logs-project" class="styled-select auth-input">
+                  <option value="">All projects</option>
+                </select>
+              </label>
+              <label class="fb-field-inline">
+                <span>Filter</span>
+                <select id="logs-filter" class="styled-select auth-input">
+                  <option value="all">All</option>
+                  <option value="error">Errors</option>
+                  <option value="warn">Warnings</option>
+                  <option value="unread">Unread</option>
+                </select>
+              </label>
+              <label class="fb-field-inline">
+                <span>Sort</span>
+                <select id="logs-sort" class="styled-select auth-input">
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="project">Project A-Z</option>
+                  <option value="count">Most duplicates</option>
+                  <option value="level">Level</option>
+                </select>
+              </label>
+              <button type="button" class="auth-primary" onclick="logsRefresh()">Refresh</button>
+            </div>
+            <div class="fb-export-actions">
+              <button type="button" class="ink-btn" onclick="logsExportCsv()">Export CSV</button>
+              <button type="button" class="ink-btn" onclick="logsExportJson()">Export JSON</button>
+            </div>
           </div>
           <div class="fb-inbox-layout">
             <div class="custom-table-container" style="overflow-x: auto; flex: 1;">
@@ -300,7 +308,7 @@
               </select>
             </label>
             <button type="button" class="auth-primary" onclick="analyticsRefresh()">Refresh</button>
-            <button type="button" class="secondary-btn" onclick="analyticsExportCsv()">Export CSV</button>
+            <button type="button" class="ink-btn" onclick="analyticsExportCsv()">Export CSV</button>
           </div>
           <div class="fb-stat-grid fb-stat-grid--3">
             <div class="fb-stat"><span class="fb-stat-label">Total</span><span class="fb-stat-value" id="an-total">-</span></div>
@@ -328,18 +336,22 @@
           </div>
         </div>
         <div id="projects-workspace" hidden>
-          <div class="fb-toolbar" style="margin-bottom: 12px;">
-            <label class="fb-field-inline">
-              <span>Sort</span>
-              <select id="projects-sort" class="styled-select auth-input">
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="name">Name A-Z</option>
-                <option value="submissions">Most submissions</option>
-              </select>
-            </label>
-            <button type="button" class="secondary-btn" onclick="projectsExportCsv()">Export CSV</button>
-            <button type="button" class="secondary-btn" onclick="projectsExportJson()">Export JSON</button>
+          <div class="fb-toolbar-row" style="margin-bottom: 12px;">
+            <div class="fb-toolbar">
+              <label class="fb-field-inline">
+                <span>Sort</span>
+                <select id="projects-sort" class="styled-select auth-input">
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="name">Name A-Z</option>
+                  <option value="submissions">Most submissions</option>
+                </select>
+              </label>
+            </div>
+            <div class="fb-export-actions">
+              <button type="button" class="ink-btn" onclick="projectsExportCsv()">Export CSV</button>
+              <button type="button" class="ink-btn" onclick="projectsExportJson()">Export JSON</button>
+            </div>
           </div>
           <div id="projects-create" class="auth-card" style="margin-bottom: 20px;">
             <p class="auth-card-title">New project</p>

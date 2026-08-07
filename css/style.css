@@ -2665,8 +2665,29 @@ section.docs-panel.current {
   gap: 12px;
   align-items: flex-end;
   justify-content: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+  width: auto;
+  flex: 1 1 auto;
+}
+.fb-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
   width: 100%;
+}
+.fb-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+.fb-export-actions .ink-btn {
+  white-space: nowrap;
 }
 .fb-field-inline {
   display: flex;
