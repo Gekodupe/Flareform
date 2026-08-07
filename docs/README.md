@@ -7,7 +7,7 @@
 | Feature | Description |
 |---------|-------------|
 | Form endpoints | `POST /f/{projectId}` - HTML forms or JSON |
-| Error logs | `POST /l/{projectId}` - worryful errors, deduped |
+| Error logs | `POST /l/{projectId}` - errors and warnings, deduped |
 | Images | Multipart image uploads (separate monthly quota) |
 | Inbox & logs | Filter by project, sort, detail, CSV/JSON export |
 | API keys | Generate `ff_live_…` keys on the API tab |

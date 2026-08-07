@@ -4,7 +4,7 @@ var DOCS_NAV = [
   { label: 'Quick start', hash: '#/quickstart' },
   { label: 'API reference', hash: '#/api' },
   { label: 'Forms & email', hash: '#/forms' },
-  { label: 'Logs', hash: '#/logs' },
+  { label: 'Error logs', hash: '#/logs' },
   { label: 'Images', hash: '#/images' },
   { label: 'Self-host', hash: '#/self-host' },
   { label: 'Plans', hash: '#/plans' },

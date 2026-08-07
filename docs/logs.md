@@ -1,6 +1,6 @@
-# Logs
+# Error logs
 
-Capture worryful client/server errors from your sites.
+Capture client and server errors from your sites.
 
 ## Enable
 
@@ -32,4 +32,4 @@ Identical fingerprints are collapsed; `occurrenceCount` increases. First unique 
 
 ## UI
 
-Open the **Logs** tab to filter by project/level, inspect JSON, mark read, or delete.
+Open the **Error logs** tab to filter by project/level, inspect JSON, mark read, or delete.

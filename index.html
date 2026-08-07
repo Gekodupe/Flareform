@@ -72,7 +72,7 @@
       <div class="mobile-menu-content">
         <button class="mobile-menu-link" data-tab="1">Overview</button>
         <button class="mobile-menu-link" data-tab="2">Inbox</button>
-        <button class="mobile-menu-link" data-tab="9">Logs</button>
+        <button class="mobile-menu-link" data-tab="9">Error logs</button>
         <button class="mobile-menu-link" data-tab="3">Analytics</button>
         <button class="mobile-menu-link" data-tab="4">Projects</button>
         <button class="mobile-menu-link" data-tab="10">Docs</button>
@@ -112,7 +112,7 @@
           <div class="fb-stat-grid" id="overview-stats" aria-live="polite">
             <div class="fb-stat"><span class="fb-stat-label">Projects</span><span class="fb-stat-value" id="ov-projects">-</span></div>
             <div class="fb-stat"><span class="fb-stat-label">Forms</span><span class="fb-stat-value" id="ov-subs">-</span></div>
-            <div class="fb-stat"><span class="fb-stat-label">Logs</span><span class="fb-stat-value" id="ov-logs">-</span></div>
+            <div class="fb-stat"><span class="fb-stat-label">Error logs</span><span class="fb-stat-value" id="ov-logs">-</span></div>
             <div class="fb-stat"><span class="fb-stat-label">Spam</span><span class="fb-stat-value" id="ov-spam">-</span></div>
             <div class="fb-stat"><span class="fb-stat-label">Unread</span><span class="fb-stat-value" id="ov-unread">-</span></div>
           </div>
@@ -210,11 +210,11 @@
 
       <!-- Logs -->
       <section id="s-9" role="tabpanel" aria-labelledby="t-9" hidden>
-        <h1>Logs</h1>
-        <p class="tool-intro">Worryful client and server errors from your sites. Duplicates are collapsed. Logging is per-project and uses your submission quota.</p>
+        <h1>Error logs</h1>
+        <p class="tool-intro">Client and server errors from your projects. Duplicates collapse automatically. Enable logging per project; events share your monthly submission quota.</p>
         <div id="logs-auth-gate" class="auth-card auth-gate-card" hidden>
           <p class="auth-card-title">Sign in required</p>
-          <p class="auth-card-desc">Create an account to view error logs from your projects.</p>
+          <p class="auth-card-desc">Sign in to view error logs from your projects.</p>
           <div class="auth-actions">
             <button type="button" class="auth-primary" onclick="switchToTab('6')">Account</button>
           </div>
@@ -716,7 +716,7 @@
         </li>
         <li role="presentation">
           <button class="nav-tab-btn" id="t-9" role="tab" aria-selected="false" aria-controls="s-9" tabindex="-1" data-slug="logs">
-            <i class="ph-fill ph-warning-circle"></i> Logs
+            <i class="ph-fill ph-warning-circle"></i> Error logs
           </button>
         </li>
         <li role="presentation">

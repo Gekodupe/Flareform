@@ -11,7 +11,7 @@ var PAGE_TITLES = {
   '6': 'Account',
   '7': 'Legal',
   '8': 'Support',
-  '9': 'Logs',
+  '9': 'Error logs',
   '10': 'Docs',
   '11': 'API'
 };
