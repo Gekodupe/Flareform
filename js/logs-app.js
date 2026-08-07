@@ -6,7 +6,7 @@ async function logsFillProjectSelect() {
   if (!sel) return;
   var current = sel.value;
   try {
-    var data = await fbFetch('/v1/projects');
+    var data = await fbFetch('/v1/projects?sort=name');
     var projects = data.projects || [];
     sel.innerHTML = '<option value="">All projects</option>';
     projects.forEach(function (p) {
@@ -32,6 +32,21 @@ function logsPreview(payload) {
   }).join(' · ');
 }
 
+function logsQuery(limit) {
+  var projectId = (document.getElementById('logs-project') || {}).value || '';
+  var filter = (document.getElementById('logs-filter') || {}).value || 'all';
+  var sort = (document.getElementById('logs-sort') || {}).value || 'newest';
+  var qs =
+    '?limit=' +
+    (limit || 50) +
+    '&filter=' +
+    encodeURIComponent(filter) +
+    '&sort=' +
+    encodeURIComponent(sort);
+  if (projectId) qs += '&projectId=' + encodeURIComponent(projectId);
+  return qs;
+}
+
 async function initLogsTab() {
   var gate = document.getElementById('logs-auth-gate');
   var workspace = document.getElementById('logs-workspace');
@@ -43,16 +58,13 @@ async function initLogsTab() {
   if (gate) gate.hidden = true;
   if (workspace) workspace.hidden = false;
   await logsFillProjectSelect();
-  var proj = document.getElementById('logs-project');
-  var filter = document.getElementById('logs-filter');
-  if (proj && !proj.dataset.bound) {
-    proj.dataset.bound = '1';
-    proj.addEventListener('change', logsRefresh);
-  }
-  if (filter && !filter.dataset.bound) {
-    filter.dataset.bound = '1';
-    filter.addEventListener('change', logsRefresh);
-  }
+  ['logs-project', 'logs-filter', 'logs-sort'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && !el.dataset.bound) {
+      el.dataset.bound = '1';
+      el.addEventListener('change', logsRefresh);
+    }
+  });
   await logsRefresh();
 }
 
@@ -61,12 +73,8 @@ async function logsRefresh() {
     showToast('Sign in to view logs', 'warning');
     return;
   }
-  var projectId = (document.getElementById('logs-project') || {}).value || '';
-  var filter = (document.getElementById('logs-filter') || {}).value || 'all';
-  var qs = '?limit=50&filter=' + encodeURIComponent(filter);
-  if (projectId) qs += '&projectId=' + encodeURIComponent(projectId);
   try {
-    var data = await fbFetch('/v1/logs' + qs);
+    var data = await fbFetch('/v1/logs' + logsQuery(50));
     logsItems = data.items || [];
     var tbody = document.getElementById('logs-body');
     if (!tbody) return;
@@ -160,6 +168,70 @@ async function logsDelete() {
   } catch (e) {
     showToast(e.message || 'Delete failed', 'error');
   }
+}
+
+function logsExportCsv() {
+  logsExport('csv');
+}
+
+function logsExportJson() {
+  logsExport('json');
+}
+
+async function logsExport(format) {
+  if (!fbIsSignedIn()) {
+    showToast('Sign in to export', 'warning');
+    return;
+  }
+  try {
+    var data = await fbFetch('/v1/logs' + logsQuery(500));
+    var items = data.items || [];
+    if (!items.length) {
+      showToast('Nothing to export', 'warning');
+      return;
+    }
+    if (format === 'json') {
+      downloadLogsBlob(
+        JSON.stringify(items, null, 2),
+        'flareform-logs.json',
+        'application/json;charset=utf-8'
+      );
+      return;
+    }
+    var lines = ['id,project,projectId,level,createdAt,occurrenceCount,origin,payload'];
+    items.forEach(function (item) {
+      lines.push(
+        [
+          csvCell(item.id),
+          csvCell(item.projectName || ''),
+          csvCell(item.projectId || ''),
+          csvCell(item.level || ''),
+          csvCell(item.createdAt),
+          item.occurrenceCount || 1,
+          csvCell(item.origin || ''),
+          csvCell(JSON.stringify(item.payload || {}))
+        ].join(',')
+      );
+    });
+    downloadLogsBlob(lines.join('\n'), 'flareform-logs.csv', 'text/csv;charset=utf-8');
+  } catch (e) {
+    showToast(e.message || 'Export failed', 'error');
+  }
+}
+
+function downloadLogsBlob(text, filename, type) {
+  var blob = new Blob([text], { type: type });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function csvCell(v) {
+  var s = String(v == null ? '' : v);
+  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
 }
 
 function esc(s) {

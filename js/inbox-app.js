@@ -6,7 +6,7 @@ async function fillProjectSelect(selectId) {
   if (!sel) return;
   var current = sel.value;
   try {
-    var data = await fbFetch('/v1/projects');
+    var data = await fbFetch('/v1/projects?sort=name');
     var projects = data.projects || [];
     sel.innerHTML = '<option value="">All projects</option>';
     projects.forEach(function (p) {
@@ -31,17 +31,28 @@ function inboxPreview(payload) {
   return parts.join(' · ');
 }
 
+function inboxQuery(limit) {
+  var projectId = (document.getElementById('inbox-project') || {}).value || '';
+  var filter = (document.getElementById('inbox-filter') || {}).value || 'all';
+  var sort = (document.getElementById('inbox-sort') || {}).value || 'newest';
+  var qs =
+    '?limit=' +
+    (limit || 50) +
+    '&filter=' +
+    encodeURIComponent(filter) +
+    '&sort=' +
+    encodeURIComponent(sort);
+  if (projectId) qs += '&projectId=' + encodeURIComponent(projectId);
+  return qs;
+}
+
 async function inboxRefresh() {
   if (!fbIsSignedIn()) {
     showToast('Sign in to view inbox', 'warning');
     return;
   }
-  var projectId = (document.getElementById('inbox-project') || {}).value || '';
-  var filter = (document.getElementById('inbox-filter') || {}).value || 'all';
-  var qs = '?limit=50&filter=' + encodeURIComponent(filter);
-  if (projectId) qs += '&projectId=' + encodeURIComponent(projectId);
   try {
-    var data = await fbFetch('/v1/inbox' + qs);
+    var data = await fbFetch('/v1/inbox' + inboxQuery(50));
     inboxItems = data.items || [];
     var tbody = document.getElementById('inbox-body');
     if (!tbody) return;
@@ -157,28 +168,59 @@ async function inboxDelete() {
 }
 
 function inboxExportCsv() {
-  if (!inboxItems.length) {
-    showToast('Nothing to export', 'warning');
+  inboxExport('csv');
+}
+
+function inboxExportJson() {
+  inboxExport('json');
+}
+
+async function inboxExport(format) {
+  if (!fbIsSignedIn()) {
+    showToast('Sign in to export', 'warning');
     return;
   }
-  var lines = ['id,project,createdAt,isSpam,spamScore,origin,payload'];
-  inboxItems.forEach(function (item) {
-    lines.push(
-      [
-        csv(item.id),
-        csv(item.projectName || item.projectId),
-        csv(item.createdAt),
-        item.isSpam ? '1' : '0',
-        item.spamScore,
-        csv(item.origin || ''),
-        csv(JSON.stringify(item.payload || {}))
-      ].join(',')
-    );
-  });
-  var blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  try {
+    var data = await fbFetch('/v1/inbox' + inboxQuery(500));
+    var items = data.items || [];
+    if (!items.length) {
+      showToast('Nothing to export', 'warning');
+      return;
+    }
+    if (format === 'json') {
+      downloadBlob(
+        JSON.stringify(items, null, 2),
+        'flareform-inbox.json',
+        'application/json;charset=utf-8'
+      );
+      return;
+    }
+    var lines = ['id,project,projectId,createdAt,isSpam,spamScore,origin,payload'];
+    items.forEach(function (item) {
+      lines.push(
+        [
+          csv(item.id),
+          csv(item.projectName || ''),
+          csv(item.projectId || ''),
+          csv(item.createdAt),
+          item.isSpam ? '1' : '0',
+          item.spamScore,
+          csv(item.origin || ''),
+          csv(JSON.stringify(item.payload || {}))
+        ].join(',')
+      );
+    });
+    downloadBlob(lines.join('\n'), 'flareform-inbox.csv', 'text/csv;charset=utf-8');
+  } catch (e) {
+    showToast(e.message || 'Export failed', 'error');
+  }
+}
+
+function downloadBlob(text, filename, type) {
+  var blob = new Blob([text], { type: type });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'Flareform-inbox.csv';
+  a.download = filename;
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -211,15 +253,12 @@ async function initInboxTab() {
   if (gate) gate.hidden = true;
   if (workspace) workspace.hidden = false;
   await fillProjectSelect('inbox-project');
-  var filter = document.getElementById('inbox-filter');
-  var project = document.getElementById('inbox-project');
-  if (filter && !filter.dataset.bound) {
-    filter.dataset.bound = '1';
-    filter.addEventListener('change', inboxRefresh);
-  }
-  if (project && !project.dataset.bound) {
-    project.dataset.bound = '1';
-    project.addEventListener('change', inboxRefresh);
-  }
+  ['inbox-filter', 'inbox-project', 'inbox-sort'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && !el.dataset.bound) {
+      el.dataset.bound = '1';
+      el.addEventListener('change', inboxRefresh);
+    }
+  });
   await inboxRefresh();
 }

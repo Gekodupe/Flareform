@@ -92,13 +92,3 @@ function teardownDocsTab() {
     aside.setAttribute('aria-hidden', 'true');
   }
 }
-
-function initApiTab() {
-  switchToTab('10', { skipHash: true });
-  docsNavigate('#/api');
-  if (location.hash !== '#docs') {
-    try {
-      history.replaceState(null, '', '#docs');
-    } catch (e) { /* ignore */ }
-  }
-}

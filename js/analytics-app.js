@@ -34,6 +34,7 @@ async function analyticsRefresh() {
   if (chart) chart.innerHTML = '<p class="auth-card-desc">Loading...</p>';
   try {
     var data = await fbFetch('/v1/analytics' + qs);
+    window._fbAnalyticsCache = data;
     var t = data.totals || {};
     var total = Number(t.submissions || 0);
     var spam = Number(t.spam || 0);
@@ -157,12 +158,40 @@ function setText(id, val) {
   if (el) el.textContent = val == null ? '-' : String(val);
 }
 
+function analyticsExportCsv() {
+  var data = window._fbAnalyticsCache;
+  if (!data || !(data.byDay || []).length) {
+    showToast('Nothing to export', 'warning');
+    return;
+  }
+  var lines = ['day,total,spam,logs'];
+  (data.byDay || []).forEach(function (d) {
+    lines.push(
+      [d.day, Number(d.total || 0), Number(d.spam || 0), Number(d.logs || 0)].join(',')
+    );
+  });
+  var t = data.totals || {};
+  lines.push('');
+  lines.push('metric,value');
+  lines.push('forms,' + Number(t.forms || t.submissions || 0));
+  lines.push('spam,' + Number(t.spam || 0));
+  lines.push('logs,' + Number(t.logs || 0));
+  lines.push('unread,' + Number(t.unread || 0));
+  lines.push('projects,' + Number(t.projects || 0));
+  var blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'flareform-analytics.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 async function fillProjectSelect(selectId) {
   var sel = document.getElementById(selectId);
   if (!sel) return;
   var current = sel.value;
   try {
-    var data = await fbFetch('/v1/projects');
+    var data = await fbFetch('/v1/projects?sort=name');
     sel.innerHTML = '<option value="">All projects</option>';
     (data.projects || []).forEach(function (p) {
       var opt = document.createElement('option');

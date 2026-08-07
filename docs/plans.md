@@ -7,5 +7,6 @@
 | Forms + logs / month | 1,000 | 25,000 | 200,000 |
 | Images / month | 50 | 2,000 | 20,000 |
 | Max image size | 2 MB | 2 MB | 2 MB |
+| API keys | 2 | 5 | 10 |
 
-Checkout and the Stripe customer portal live under **Pricing** / **Account**.
+Create and revoke keys on the **API** tab (not Docs). Checkout and the Stripe customer portal live under **Pricing** / **Account**.

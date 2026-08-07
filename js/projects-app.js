@@ -10,6 +10,11 @@ async function initProjectsTab() {
   if (workspace) workspace.hidden = false;
   var notify = document.getElementById('project-notify');
   if (notify && !notify.value && fbEmail) notify.value = fbEmail;
+  var sort = document.getElementById('projects-sort');
+  if (sort && !sort.dataset.bound) {
+    sort.dataset.bound = '1';
+    sort.addEventListener('change', projectsRefresh);
+  }
   await projectsRefresh();
 }
 
@@ -102,8 +107,10 @@ async function projectsRefresh() {
   var list = document.getElementById('projects-list');
   if (!list) return;
   try {
-    var data = await fbFetch('/v1/projects');
+    var sort = (document.getElementById('projects-sort') || {}).value || 'newest';
+    var data = await fbFetch('/v1/projects?sort=' + encodeURIComponent(sort));
     var projects = data.projects || [];
+    window._fbProjectsCache = projects;
     if (!projects.length) {
       list.innerHTML =
         '<div class="auth-card"><p class="auth-card-title">No projects yet</p>' +
@@ -235,6 +242,72 @@ async function projectsDelete(id) {
   } catch (e) {
     showToast(e.message || 'Delete failed', 'error');
   }
+}
+
+function projectsExportCsv() {
+  var projects = window._fbProjectsCache || [];
+  if (!projects.length) {
+    showToast('Nothing to export', 'warning');
+    return;
+  }
+  var base = fbApiBase();
+  var lines = ['id,name,formEndpoint,logEndpoint,forms,logs,spam,logsEnabled,notifyEmail,createdAt'];
+  projects.forEach(function (p) {
+    lines.push(
+      [
+        csvCell(p.id),
+        csvCell(p.name),
+        csvCell(base + '/f/' + p.id),
+        csvCell(base + '/l/' + p.id),
+        Number(p.submission_count || 0),
+        Number(p.log_count || 0),
+        Number(p.spam_count || 0),
+        Number(p.logs_enabled) === 1 ? '1' : '0',
+        csvCell(p.notify_email || ''),
+        csvCell(p.created_at || '')
+      ].join(',')
+    );
+  });
+  downloadProjectsBlob(lines.join('\n'), 'flareform-projects.csv', 'text/csv;charset=utf-8');
+}
+
+function projectsExportJson() {
+  var projects = window._fbProjectsCache || [];
+  if (!projects.length) {
+    showToast('Nothing to export', 'warning');
+    return;
+  }
+  var base = fbApiBase();
+  var out = projects.map(function (p) {
+    return {
+      id: p.id,
+      name: p.name,
+      formEndpoint: base + '/f/' + p.id,
+      logEndpoint: base + '/l/' + p.id,
+      submissionCount: Number(p.submission_count || 0),
+      logCount: Number(p.log_count || 0),
+      spamCount: Number(p.spam_count || 0),
+      logsEnabled: Number(p.logs_enabled) === 1,
+      notifyEmail: p.notify_email || '',
+      createdAt: p.created_at || ''
+    };
+  });
+  downloadProjectsBlob(JSON.stringify(out, null, 2), 'flareform-projects.json', 'application/json;charset=utf-8');
+}
+
+function downloadProjectsBlob(text, filename, type) {
+  var blob = new Blob([text], { type: type });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function csvCell(v) {
+  var s = String(v == null ? '' : v);
+  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
 }
 
 function esc(s) {

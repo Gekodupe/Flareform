@@ -10,18 +10,18 @@
   <meta name="application-name" content="Flareform">
   <meta name="author" content="Flareform">
   <meta name="theme-color" content="#f7831e">
-  <link rel="canonical" href="https://flareform.com/">
+  <link rel="canonical" href="https://flareform.pages.dev/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Flareform">
   <meta property="og:title" content="Flareform - Form endpoints &amp; inbox">
   <meta property="og:description" content="Open-source Formspree alternative. Form endpoints, submissions inbox, email notify, and analytics on Cloudflare.">
-  <meta property="og:url" content="https://flareform.com/">
-  <meta property="og:image" content="https://flareform.com/public/icon-512.png">
+  <meta property="og:url" content="https://flareform.pages.dev/">
+  <meta property="og:image" content="https://flareform.pages.dev/public/icon-512.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Flareform - Form endpoints &amp; inbox">
   <meta name="twitter:description" content="Open-source Formspree alternative. Form endpoints, submissions inbox, and analytics on Cloudflare.">
-  <meta name="twitter:image" content="https://flareform.com/public/icon-512.png">
+  <meta name="twitter:image" content="https://flareform.pages.dev/public/icon-512.png">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://d3js.org https://cdn.jsdelivr.net; script-src-attr 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com data: https://unpkg.com https://cdn.jsdelivr.net; img-src 'self' data: blob:; connect-src 'self' http://127.0.0.1:8787 http://localhost:8787 https://*.workers.dev https://cdn.jsdelivr.net; frame-src 'self'; child-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'">
   <link rel="manifest" href="site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -165,8 +165,18 @@
               <option value="unread">Unread</option>
             </select>
           </label>
+          <label class="fb-field-inline">
+            <span>Sort</span>
+            <select id="inbox-sort" class="styled-select auth-input">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="project">Project A–Z</option>
+              <option value="score">Spam score</option>
+            </select>
+          </label>
           <button type="button" class="auth-primary" onclick="inboxRefresh()">Refresh</button>
           <button type="button" class="secondary-btn" onclick="inboxExportCsv()">Export CSV</button>
+          <button type="button" class="secondary-btn" onclick="inboxExportJson()">Export JSON</button>
         </div>
         <div class="fb-inbox-layout">
           <div class="custom-table-container" style="overflow-x: auto; flex: 1;">
@@ -226,7 +236,19 @@
                 <option value="unread">Unread</option>
               </select>
             </label>
+            <label class="fb-field-inline">
+              <span>Sort</span>
+              <select id="logs-sort" class="styled-select auth-input">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="project">Project A–Z</option>
+                <option value="count">Most duplicates</option>
+                <option value="level">Level</option>
+              </select>
+            </label>
             <button type="button" class="auth-primary" onclick="logsRefresh()">Refresh</button>
+            <button type="button" class="secondary-btn" onclick="logsExportCsv()">Export CSV</button>
+            <button type="button" class="secondary-btn" onclick="logsExportJson()">Export JSON</button>
           </div>
           <div class="fb-inbox-layout">
             <div class="custom-table-container" style="overflow-x: auto; flex: 1;">
@@ -278,6 +300,7 @@
               </select>
             </label>
             <button type="button" class="auth-primary" onclick="analyticsRefresh()">Refresh</button>
+            <button type="button" class="secondary-btn" onclick="analyticsExportCsv()">Export CSV</button>
           </div>
           <div class="fb-chart-card">
             <h2>Submissions over time</h2>
@@ -305,6 +328,19 @@
           </div>
         </div>
         <div id="projects-workspace" hidden>
+          <div class="fb-toolbar" style="margin-bottom: 12px;">
+            <label class="fb-field-inline">
+              <span>Sort</span>
+              <select id="projects-sort" class="styled-select auth-input">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="name">Name A–Z</option>
+                <option value="submissions">Most submissions</option>
+              </select>
+            </label>
+            <button type="button" class="secondary-btn" onclick="projectsExportCsv()">Export CSV</button>
+            <button type="button" class="secondary-btn" onclick="projectsExportJson()">Export JSON</button>
+          </div>
           <div id="projects-create" class="auth-card" style="margin-bottom: 20px;">
             <p class="auth-card-title">New project</p>
             <p class="auth-card-desc">1. Name it. 2. Create. 3. Copy the form endpoint into your form <code>action</code>.</p>
@@ -559,7 +595,7 @@
         <p>These terms are governed by the laws of the State of Delaware, USA, without regard to conflict-of-law rules, unless mandatory local consumer law requires otherwise. Exclusive venue for disputes that are not resolved informally is the state or federal courts located in Delaware, except that Flareform may seek injunctive relief in any jurisdiction. You waive jury trial to the extent permitted by law. If a provision is unenforceable, the remainder stays in effect. Failure to enforce a provision is not a waiver. These terms are the entire agreement regarding the Service and supersede prior conflicting terms for the same subject.</p>
 
         <h2 id="legal-contact">12. Contact</h2>
-        <p>Questions about this Legal page: use Get Support in the app, visit <a href="https://flareform.com" target="_blank" rel="noopener noreferrer">flareform.com</a>, or open an issue in the Flareform repository. For privacy requests, include enough detail for us to verify and respond.</p>
+        <p>Questions about this Legal page: use Get Support in the app, visit <a href="https://flareform.pages.dev" target="_blank" rel="noopener noreferrer">flareform.pages.dev</a>, or open an issue in the Flareform repository. For privacy requests, include enough detail for us to verify and respond.</p>
         <p class="legal-note">This page is provided for transparency and risk allocation. It is not personalized legal advice. If your use case requires a signed MSA, DPA, or other contract, contact Flareform before relying on the Service for regulated workloads.</p>
       </section>
 
@@ -612,6 +648,53 @@
       <section id="s-10" class="docs-panel" role="tabpanel" aria-labelledby="t-10" hidden>
         <iframe id="docs-frame" class="docs-frame" title="Flareform Docs" src="about:blank"></iframe>
       </section>
+
+      <!-- API keys -->
+      <section id="s-11" role="tabpanel" aria-labelledby="t-11" hidden>
+        <h1>API</h1>
+        <p class="tool-intro" id="api-tool-intro">Sign in to create and revoke API keys for your Flareform account.</p>
+        <div id="api-auth-gate" class="auth-card auth-gate-card">
+          <p class="auth-card-title">Sign in required</p>
+          <p class="auth-card-desc">API keys let your server manage projects, inbox, logs, and analytics. Form and log ingest stay public — no key needed there.</p>
+          <div class="auth-actions auth-actions-wrap">
+            <button type="button" class="auth-primary" onclick="switchToTab('6')">Account</button>
+            <button type="button" class="secondary-btn" onclick="switchToTab('10')">Docs</button>
+          </div>
+        </div>
+        <div id="api-workspace" class="api-workspace" hidden>
+          <div class="api-panel">
+            <div class="api-panel-header">
+              <div>
+                <p class="api-panel-title">Keys</p>
+                <p class="api-panel-meta" id="api-user-plan"></p>
+              </div>
+              <button type="button" class="secondary-btn" onclick="switchToTab('10')">Docs</button>
+            </div>
+            <p class="api-panel-desc" id="api-create-desc"></p>
+            <div id="api-create-row" class="api-create-row" hidden>
+              <div class="api-create-field">
+                <label class="api-field-label" for="api-key-label">Label</label>
+                <input type="text" id="api-key-label" class="api-input" placeholder="Production" maxlength="64" autocomplete="off">
+              </div>
+              <button type="button" id="api-create-btn" class="auth-primary" onclick="apiKeysCreate()">Create key</button>
+            </div>
+            <div id="api-blocked-row" class="api-blocked-row" hidden>
+              <div class="auth-actions auth-actions-wrap">
+                <button type="button" id="api-blocked-primary" class="auth-primary" onclick="switchToTab('6')">Open Account</button>
+                <button type="button" id="api-blocked-secondary" class="secondary-btn" onclick="switchToTab('5')" hidden>Pricing</button>
+              </div>
+            </div>
+            <div id="api-key-reveal" class="api-key-reveal" hidden>
+              <label class="api-field-label" for="api-key-secret">New key — copy now, shown once</label>
+              <div class="api-create-row">
+                <input type="text" id="api-key-secret" class="api-mono api-input" readonly autocomplete="off">
+                <button type="button" class="auth-primary" onclick="apiKeysCopySecret()">Copy</button>
+              </div>
+            </div>
+            <div id="api-key-list" class="api-key-list" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <aside id="docs-sidebar" class="docs-sidebar" hidden aria-hidden="true" aria-label="Documentation">
@@ -652,7 +735,7 @@
           </button>
         </li>
         <li role="presentation">
-          <button class="nav-tab-btn" id="t-11" role="tab" aria-selected="false" aria-controls="s-10" tabindex="-1" data-slug="api">
+          <button class="nav-tab-btn" id="t-11" role="tab" aria-selected="false" aria-controls="s-11" tabindex="-1" data-slug="api">
             <i class="ph-fill ph-code"></i> API
           </button>
         </li>

@@ -43,7 +43,7 @@
     '8': ['js/support-app.js'],
     '9': ['js/logs-app.js'],
     '10': ['js/docs-app.js'],
-    '11': ['js/docs-app.js']
+    '11': ['js/api-keys-app.js']
   };
   var tabScriptLoads = {};
 

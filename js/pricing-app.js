@@ -98,21 +98,21 @@ async function initPricingTab() {
           name: 'Free',
           priceMonthly: 0,
           blurb: 'Hosted starter limits.',
-          features: ['3 projects', '1k submissions / month']
+          features: ['3 projects', '1k forms+logs / month', '2 API keys']
         },
         {
           id: 'starter',
           name: 'Starter',
           priceMonthly: 19,
           blurb: 'Growing sites.',
-          features: ['15 projects', '25k submissions / month']
+          features: ['15 projects', '25k forms+logs / month', '5 API keys']
         },
         {
           id: 'pro',
           name: 'Pro',
           priceMonthly: 49,
           blurb: 'Production volumes.',
-          features: ['100 projects', '200k submissions / month']
+          features: ['100 projects', '200k forms+logs / month', '10 API keys']
         }
       ]
     });

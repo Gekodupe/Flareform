@@ -88,10 +88,10 @@ function updatePageTitle(tabId) {
 }
 
 function onTabActivated(tabId) {
-  if (tabId !== '10' && tabId !== '11' && typeof teardownDocsTab === 'function') {
+  if (tabId !== '10' && typeof teardownDocsTab === 'function') {
     teardownDocsTab();
   }
-  var ready = typeof ensureTabScripts === 'function' ? ensureTabScripts(tabId === '11' ? '10' : tabId) : Promise.resolve();
+  var ready = typeof ensureTabScripts === 'function' ? ensureTabScripts(tabId) : Promise.resolve();
   ready.then(function () {
     if (tabId === '1' && typeof initOverviewTab === 'function') initOverviewTab();
     if (tabId === '2' && typeof initInboxTab === 'function') initInboxTab();
@@ -102,10 +102,7 @@ function onTabActivated(tabId) {
     if (tabId === '6' && typeof initAccountTab === 'function') initAccountTab();
     if (tabId === '8' && typeof initSupportTab === 'function') initSupportTab();
     if (tabId === '10' && typeof initDocsTab === 'function') initDocsTab();
-    if (tabId === '11') {
-      if (typeof initDocsTab === 'function') initDocsTab();
-      if (typeof docsNavigate === 'function') docsNavigate('#/api');
-    }
+    if (tabId === '11' && typeof initApiKeysTab === 'function') initApiKeysTab();
   });
   if (tabId === '7') {
     var legalPanel = document.getElementById('s-7');

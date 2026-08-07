@@ -2,13 +2,14 @@
   "name": "Flareform",
   "brandName": "Flareform",
   "shortName": "Flareform",
-  "siteUrl": "https://flareform.com",
+  "siteUrl": "https://flareform.pages.dev",
   "description": "Flareform is an open-source Formspree alternative. Host form endpoints, error logs, inbox, and analytics on Cloudflare.",
   "keywords": "Flareform, Formspree alternative, form endpoint, error logs, form inbox, submissions, Cloudflare, open source, self-host",
   "contact": "https://github.com/orgs/Gekodupe",
   "sameAs": [
     "https://github.com/Gekodupe/Flareform",
     "https://github.com/orgs/Gekodupe",
+    "https://flareform.pages.dev",
     "https://flareform.com",
     "https://x.com/blacnovadev"
   ],

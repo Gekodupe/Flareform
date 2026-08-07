@@ -2,8 +2,9 @@
 
 Open-source **Formspree alternative** — form endpoints, error logs, image uploads, inbox, and analytics.
 
+- **Live:** [https://flareform.pages.dev](https://flareform.pages.dev)
 - **UI repo:** [Gekodupe/Flareform](https://github.com/Gekodupe/Flareform)
-- **API repo:** [Gekodupe/FlareformAPI](https://github.com/Gekodupe/FlareformAPI)
+- **API:** [https://flareform-api.nic-58f.workers.dev](https://flareform-api.nic-58f.workers.dev) · [Gekodupe/FlareformAPI](https://github.com/Gekodupe/FlareformAPI)
 - **Org:** [github.com/orgs/Gekodupe](https://github.com/orgs/Gekodupe)
 
 ## Local UI
@@ -11,6 +12,12 @@ Open-source **Formspree alternative** — form endpoints, error logs, image uplo
 ```bash
 npm install
 npm run serve
+```
+
+Deploy UI to Cloudflare Pages:
+
+```bash
+npm run pages:deploy
 ```
 
 API (sibling package):

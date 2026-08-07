@@ -2,7 +2,7 @@
   "name": "@flareform/flareform",
   "version": "0.1.0",
   "description": "Flareform — open-source Formspree alternative on Cloudflare (forms, inbox, analytics).",
-  "homepage": "https://github.com/Gekodupe/Flareform",
+  "homepage": "https://flareform.pages.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/Gekodupe/Flareform.git"
@@ -31,6 +31,8 @@
     "serve": "node scripts/serve.js",
     "build": "node scripts/build.js",
     "site-meta": "node scripts/site-meta.js",
+    "pages:stage": "node scripts/pages-stage.js",
+    "pages:deploy": "node scripts/pages-stage.js && npx --prefix ../../FlareformAPI wrangler pages deploy .pages-dist --project-name=flareform --branch=main --commit-dirty=true",
     "worker:dev": "npm --prefix ../../FlareformAPI run dev",
     "worker:deploy": "npm --prefix ../../FlareformAPI run deploy",
     "db:local": "npm --prefix ../../FlareformAPI run db:local",

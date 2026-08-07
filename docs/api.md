@@ -2,7 +2,12 @@
 
 Base URL (hosted): `https://flareform-api.nic-58f.workers.dev`
 
-Auth for account routes: `Authorization: Bearer sess_...` (from login/register).
+Auth for account routes:
+
+- Session: `Authorization: Bearer sess_...` (from login/register)
+- API key: `Authorization: Bearer ff_live_...` (create keys in the **API** tab)
+
+Form and log ingest (`/f/{id}`, `/l/{id}`) stay public — no API key required.
 
 ## Health
 
@@ -21,11 +26,22 @@ Auth for account routes: `Authorization: Bearer sess_...` (from login/register).
 | POST | `/v1/auth/logout` | |
 | GET | `/v1/auth/me` | Current session |
 
+## Account & API keys
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/v1/account` | Plan, usage, keys (prefixes only) |
+| GET | `/v1/account/keys` | List keys |
+| POST | `/v1/account/keys` | `{ "label": "Production" }` — returns full key once |
+| DELETE | `/v1/account/keys/{id}` | Revoke |
+
+Email must be verified to create keys. Limits: Free 2 · Starter 5 · Pro 10.
+
 ## Projects
 
 | Method | Path |
 |--------|------|
-| GET | `/v1/projects` |
+| GET | `/v1/projects?sort=newest\|oldest\|name\|submissions` |
 | POST | `/v1/projects` |
 | GET/PATCH/DELETE | `/v1/projects/{id}` |
 
@@ -73,11 +89,13 @@ Duplicates collapse (`occurrenceCount` bumps; no extra quota).
 
 | Method | Path |
 |--------|------|
-| GET | `/v1/inbox?filter=&projectId=` |
+| GET | `/v1/inbox?filter=&projectId=&sort=&limit=` |
 | PATCH | `/v1/inbox/{id}` `{ "read": true }` / `{ "spam": true }` |
 | DELETE | `/v1/inbox/{id}` |
-| GET | `/v1/logs?filter=&projectId=` |
+| GET | `/v1/logs?filter=&projectId=&sort=&limit=` |
 | PATCH/DELETE | `/v1/logs/{id}` |
+
+Sort values: `newest`, `oldest`, `project`, `score` (inbox) / `count` (logs), `level` (logs). Limit up to 500 for exports.
 
 ## Files
 
@@ -85,7 +103,7 @@ Duplicates collapse (`occurrenceCount` bumps; no extra quota).
 
 ## Analytics
 
-`GET /v1/overview` · `GET /v1/analytics?days=30`
+`GET /v1/overview` · `GET /v1/analytics?days=30&projectId=`
 
 ## Billing
 
