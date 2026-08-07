@@ -18,7 +18,8 @@ var docsFrameReady = false;
 function docsFrameUrl(hash) {
   var target = hash || '#/';
   if (target.charAt(0) !== '#') target = '#' + target;
-  return location.origin + '/docs/index.html' + target;
+  // Use trailing slash so Pages does not 308 /docs/index.html -> /docs/
+  return location.origin + '/docs/' + target;
 }
 
 function docsSetActive(hash) {
