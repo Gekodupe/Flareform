@@ -2689,6 +2689,24 @@ section.docs-panel.current {
 .fb-export-actions .ink-btn {
   white-space: nowrap;
 }
+.fb-card-toolbar {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+.fb-chart-card .fb-card-toolbar {
+  margin-top: 0;
+}
+.fb-chart-card .fb-card-toolbar + h2 {
+  margin-top: 4px;
+}
+#projects-create .fb-card-toolbar {
+  margin-left: -0;
+  margin-right: -0;
+}
+#projects-create .fb-card-toolbar + .auth-card-title {
+  margin-top: 4px;
+}
 .fb-field-inline {
   display: flex;
   flex-direction: column;

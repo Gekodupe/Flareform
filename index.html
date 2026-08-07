@@ -300,22 +300,26 @@
           </div>
         </div>
         <div id="analytics-body" class="fb-panel">
-          <div class="fb-toolbar">
-            <label class="fb-field-inline">
-              <span>Project</span>
-              <select id="analytics-project" class="styled-select auth-input">
-                <option value="">All projects</option>
-              </select>
-            </label>
-            <button type="button" class="auth-primary" onclick="analyticsRefresh()">Refresh</button>
-            <button type="button" class="ink-btn" onclick="analyticsExportCsv()">Export CSV</button>
-          </div>
           <div class="fb-stat-grid fb-stat-grid--3">
             <div class="fb-stat"><span class="fb-stat-label">Total</span><span class="fb-stat-value" id="an-total">-</span></div>
             <div class="fb-stat"><span class="fb-stat-label">Spam</span><span class="fb-stat-value" id="an-spam">-</span></div>
             <div class="fb-stat"><span class="fb-stat-label">Spam rate</span><span class="fb-stat-value" id="an-rate">-</span></div>
           </div>
           <div id="analytics-chart-card" class="fb-chart-card is-empty">
+            <div class="fb-toolbar-row fb-card-toolbar">
+              <div class="fb-toolbar">
+                <label class="fb-field-inline">
+                  <span>Project</span>
+                  <select id="analytics-project" class="styled-select auth-input">
+                    <option value="">All projects</option>
+                  </select>
+                </label>
+              </div>
+              <div class="fb-export-actions">
+                <button type="button" class="ink-btn" onclick="analyticsRefresh()">Refresh</button>
+                <button type="button" class="ink-btn" onclick="analyticsExportCsv()">Export CSV</button>
+              </div>
+            </div>
             <h2>Submissions over time</h2>
             <div id="analytics-chart" class="fb-chart" role="img" aria-label="Submissions over time chart">
               <p class="fb-empty-msg">Loading...</p>
@@ -336,24 +340,24 @@
           </div>
         </div>
         <div id="projects-workspace" hidden>
-          <div class="fb-toolbar-row" style="margin-bottom: 12px;">
-            <div class="fb-toolbar">
-              <label class="fb-field-inline">
-                <span>Sort</span>
-                <select id="projects-sort" class="styled-select auth-input">
-                  <option value="newest">Newest</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="name">Name A-Z</option>
-                  <option value="submissions">Most submissions</option>
-                </select>
-              </label>
-            </div>
-            <div class="fb-export-actions">
-              <button type="button" class="ink-btn" onclick="projectsExportCsv()">Export CSV</button>
-              <button type="button" class="ink-btn" onclick="projectsExportJson()">Export JSON</button>
-            </div>
-          </div>
           <div id="projects-create" class="auth-card" style="margin-bottom: 20px;">
+            <div class="fb-toolbar-row fb-card-toolbar">
+              <div class="fb-toolbar">
+                <label class="fb-field-inline">
+                  <span>Sort</span>
+                  <select id="projects-sort" class="styled-select auth-input">
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="name">Name A-Z</option>
+                    <option value="submissions">Most submissions</option>
+                  </select>
+                </label>
+              </div>
+              <div class="fb-export-actions">
+                <button type="button" class="ink-btn" onclick="projectsExportCsv()">Export CSV</button>
+                <button type="button" class="ink-btn" onclick="projectsExportJson()">Export JSON</button>
+              </div>
+            </div>
             <p class="auth-card-title">New project</p>
             <p class="auth-card-desc">1. Name it. 2. Create. 3. Copy the form endpoint into your form <code>action</code>.</p>
             <div class="auth-field">
