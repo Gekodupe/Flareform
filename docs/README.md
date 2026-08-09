@@ -18,7 +18,6 @@
 
 - Frontend: [Gekodupe/Flareform](https://github.com/Gekodupe/Flareform)
 - API Worker: [Gekodupe/FlareformAPI](https://github.com/Gekodupe/FlareformAPI)
-- Org: [github.com/orgs/Gekodupe](https://github.com/orgs/Gekodupe)
 
 ## Next
 

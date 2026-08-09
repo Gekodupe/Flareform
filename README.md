@@ -1,11 +1,9 @@
 # Flareform
 
-Open-source **Formspree alternative** - form endpoints, error logs, image uploads, inbox, and analytics.
+Open-source **Formspree alternative**: form endpoints, error logs, image uploads, inbox, and analytics.
 
 - **Live:** [https://flareform.pages.dev](https://flareform.pages.dev)
-- **UI repo:** [Gekodupe/Flareform](https://github.com/Gekodupe/Flareform)
-- **API:** [https://flareform-api.nic-58f.workers.dev](https://flareform-api.nic-58f.workers.dev) · [Gekodupe/FlareformAPI](https://github.com/Gekodupe/FlareformAPI)
-- **Org:** [github.com/orgs/Gekodupe](https://github.com/orgs/Gekodupe)
+- **API:** [https://flareform-api.nic-58f.workers.dev](https://flareform-api.nic-58f.workers.dev)
 
 ## Local UI
 
@@ -34,4 +32,4 @@ In the app: **Docs** and **API** tabs (Docsify). Or open `docs/index.html`.
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT. See [LICENSE](./LICENSE).
