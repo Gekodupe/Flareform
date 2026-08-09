@@ -31,3 +31,7 @@ npm run deploy
 ## Docs
 
 In the app: **Docs** and **API** tabs (Docsify). Or open `docs/index.html`.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

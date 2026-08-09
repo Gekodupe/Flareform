@@ -207,10 +207,14 @@ document.addEventListener('DOMContentLoaded', function () {
   var mobileMenuClose = document.getElementById('mobile-menu-close');
 
   function openMobile() {
-    if (mobileMenuOverlay) mobileMenuOverlay.hidden = false;
+    if (!mobileMenuOverlay) return;
+    mobileMenuOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
   }
   function closeMobile() {
-    if (mobileMenuOverlay) mobileMenuOverlay.hidden = true;
+    if (!mobileMenuOverlay) return;
+    mobileMenuOverlay.hidden = true;
+    document.body.style.overflow = '';
   }
 
   if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobile);
@@ -220,6 +224,10 @@ document.addEventListener('DOMContentLoaded', function () {
       if (e.target === mobileMenuOverlay) closeMobile();
     });
   }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && mobileMenuOverlay && !mobileMenuOverlay.hidden) closeMobile();
+  });
 
   document.querySelectorAll('.mobile-menu-link[data-tab]').forEach(function (link) {
     link.addEventListener('click', function () {
