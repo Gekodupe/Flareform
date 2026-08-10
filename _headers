@@ -22,3 +22,6 @@
 /docs/*
   Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; script-src-attr 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com data: https://cdn.jsdelivr.net; img-src 'self' data: blob: https://*.workers.dev; connect-src 'self' https://cdn.jsdelivr.net; frame-src 'self'; child-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests; frame-ancestors 'self'
   X-Frame-Options: SAMEORIGIN
+
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8

@@ -16,9 +16,9 @@ git clone https://github.com/Gekodupe/FlareformAPI.git
 cd FlareformAPI
 npm install
 cp .dev.vars.example .dev.vars
-# fill BREVO_*, STRIPE_*, GECKODUPE_API_KEY, etc.
-npx wrangler d1 create flareform   # or reuse an existing D1
-# update wrangler.jsonc ids
+# fill BREVO_*, STRIPE_*, GECKODUPE_API_KEY, TURNSTILE_SECRET, etc.
+npx wrangler d1 create flareboard   # hosted prod uses this D1 name; any name works if wrangler.jsonc matches
+# update wrangler.jsonc database_id + KV id
 npx wrangler kv namespace create FLAREFORM
 npm run db:remote
 npm run deploy
@@ -30,6 +30,13 @@ Point the UI at your worker:
 localStorage.setItem('flareform_api_base', 'https://YOUR_SUBDOMAIN.workers.dev')
 ```
 
+## Hardening tips
+
+- Set **allowed origins** on each project (browser posts from other origins are rejected).
+- `_next` / `_redirect` only allowlisted origins (or your `APP_ORIGIN` when the allowlist is empty).
+- Enable Turnstile only when `TURNSTILE_SECRET` is configured (verification fails closed).
+- Auth, support, and ingest are rate-limited via the Workers Rate Limiting binding.
+
 ## Edge spam / dedupe
 
-Set `GECKODUPE_SPAM_URL` and `GECKODUPE_API_KEY` (a `gd_live_…` key from your Geckodupe account or service registration). Without a key, Flareform falls back to a local spam heuristic and local log fingerprints.
+Set `GECKODUPE_SPAM_URL` and `GECKODUPE_API_KEY` (a `gd_live_…` key from your Geckodupe account). Without a key, Flareform falls back to a local spam heuristic and local log fingerprints. Dedupe against Geckodupe requires both URL and key. Default `SPAM_FAIL_MODE=fail-open` keeps ingest available if the spam API is down.

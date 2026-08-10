@@ -125,6 +125,9 @@ function buildHeadersFile(options) {
   appendHeaderBlock(lines, '/index.html', appCsp);
   appendHeaderBlock(lines, '/404.html', appCsp);
   appendHeaderBlock(lines, '/docs/*', docsCsp);
+  lines.push('/.well-known/security.txt');
+  lines.push('  Content-Type: text/plain; charset=utf-8');
+  lines.push('');
   return lines.join('\n');
 }
 

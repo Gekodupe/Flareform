@@ -16,6 +16,7 @@
     "js/",
     "public/",
     "docs/",
+    ".well-known/",
     "index.html",
     "404.html",
     "robots.txt",

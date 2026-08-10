@@ -9,7 +9,7 @@ const { buildHeadersFile } = require('./security-policy');
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, '.pages-dist');
 
-const INCLUDE_DIRS = ['css', 'js', 'public', 'docs'];
+const INCLUDE_DIRS = ['css', 'js', 'public', 'docs', '.well-known'];
 const INCLUDE_FILES = [
   'index.html',
   '404.html',

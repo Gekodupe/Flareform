@@ -1,0 +1,3 @@
+Contact: https://github.com/orgs/Gekodupe/repositories
+Preferred-Languages: en
+Canonical: https://flareform.pages.dev/.well-known/security.txt
