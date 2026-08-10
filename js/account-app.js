@@ -86,15 +86,25 @@ function acctRenderSignedIn(account) {
 
   var usageEl = document.getElementById('acct-usage-line');
   if (usageEl && account && account.usage) {
-    usageEl.textContent =
-      (account.usage.projects || 0) +
+    var u = account.usage;
+    var line =
+      (u.projects || 0) +
       '/' +
-      (account.usage.maxProjects || 0) +
+      (u.maxProjects || 0) +
       ' projects · ' +
-      (account.usage.submissions30d || 0) +
+      (u.submissions30d || 0) +
       '/' +
-      (account.usage.submissionsLimit || 0) +
+      (u.submissionsLimit || 0) +
       ' submissions (30d)';
+    if (u.imagesLimit != null) {
+      line +=
+        ' · ' +
+        (u.imagesMonth || 0) +
+        '/' +
+        u.imagesLimit +
+        ' images (30d)';
+    }
+    usageEl.textContent = line;
   } else if (usageEl) {
     usageEl.textContent = 'n/a';
   }

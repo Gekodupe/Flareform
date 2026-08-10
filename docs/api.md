@@ -21,6 +21,8 @@ Form and log ingest (`/f/{id}`, `/l/{id}`) stay public - no API key required.
 | POST | `/v1/auth/login` | `{ email, password, rememberMe? }` |
 | POST | `/v1/auth/start` | Magic code |
 | POST | `/v1/auth/verify` | `{ token }` or `{ email, code }` |
+| POST | `/v1/auth/verify-email` | Email verification token |
+| POST | `/v1/auth/resend-verify` | Resend verification email |
 | POST | `/v1/auth/forgot` | Password reset email |
 | POST | `/v1/auth/reset` | `{ token, password }` |
 | POST | `/v1/auth/logout` | |
@@ -110,6 +112,7 @@ Sort values: `newest`, `oldest`, `project`, `score` (inbox) / `count` (logs), `l
 | Method | Path |
 |--------|------|
 | GET | `/v1/billing/plans` |
+| GET | `/v1/billing/status` | Current subscription state |
 | POST | `/v1/billing/checkout` `{ "plan": "starter" }` |
 | POST | `/v1/billing/portal` |
 | POST | `/v1/billing/webhook` | Stripe |

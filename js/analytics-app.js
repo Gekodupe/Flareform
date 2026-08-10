@@ -37,11 +37,14 @@ async function analyticsRefresh() {
     var data = await fbFetch('/v1/analytics' + qs);
     window._fbAnalyticsCache = data;
     var t = data.totals || {};
-    var total = Number(t.submissions || 0);
+    var forms = Number(t.forms || 0);
+    var logs = Number(t.logs || 0);
+    var total = Number(t.submissions != null ? t.submissions : forms + logs);
     var spam = Number(t.spam || 0);
     setText('an-total', total);
     setText('an-spam', spam);
-    setText('an-rate', total ? Math.round((spam / total) * 100) + '%' : '0%');
+    // Spam is forms-only; rate against form volume so logs do not dilute it.
+    setText('an-rate', forms ? Math.round((spam / forms) * 100) + '%' : '0%');
     await renderAnalyticsChart(data.byDay || []);
   } catch (e) {
     if (chart) chart.innerHTML = '<p class="fb-empty-msg">' + (e.message || 'Failed to load') + '</p>';

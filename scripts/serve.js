@@ -37,10 +37,24 @@ const BLOCKED_FILES = new Set([
   path.join(ROOT, '.gitignore')
 ]);
 
-const SECURITY_HEADERS = getSecurityHeaders({
+const APP_SECURITY_HEADERS = getSecurityHeaders({
   upgradeInsecure: false,
   hsts: false
 });
+
+const DOCS_SECURITY_HEADERS = getSecurityHeaders({
+  upgradeInsecure: false,
+  hsts: false,
+  allowFraming: true,
+  docs: true
+});
+
+function securityHeadersFor(urlPath) {
+  if (urlPath === '/docs' || urlPath.indexOf('/docs/') === 0) {
+    return DOCS_SECURITY_HEADERS;
+  }
+  return APP_SECURITY_HEADERS;
+}
 
 function isBlocked(filePath) {
   if (BLOCKED_FILES.has(filePath)) return true;
@@ -77,9 +91,10 @@ function resolveRequestPath(urlPath) {
 
 http.createServer((req, res) => {
   let urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
+  const sec = securityHeadersFor(urlPath);
   const filePath = resolveRequestPath(urlPath);
   if (!filePath) {
-    res.writeHead(403, SECURITY_HEADERS);
+    res.writeHead(403, sec);
     res.end('Forbidden');
     return;
   }
@@ -89,11 +104,11 @@ http.createServer((req, res) => {
         const notFoundPath = path.join(ROOT, '404.html');
         fs.readFile(notFoundPath, (nfErr, nfData) => {
           if (nfErr) {
-            res.writeHead(404, SECURITY_HEADERS);
+            res.writeHead(404, sec);
             res.end('Not found');
             return;
           }
-          const headers = Object.assign({}, SECURITY_HEADERS, {
+          const headers = Object.assign({}, sec, {
             'Content-Type': 'text/html; charset=utf-8'
           });
           res.writeHead(404, headers);
@@ -101,13 +116,13 @@ http.createServer((req, res) => {
         });
         return;
       }
-      res.writeHead(500, SECURITY_HEADERS);
+      res.writeHead(500, sec);
       res.end('Error');
       return;
     }
     const ext = path.extname(filePath).toLowerCase();
     const cacheable = ['.js', '.css', '.svg', '.png', '.ico', '.woff2'];
-    const headers = Object.assign({}, SECURITY_HEADERS, {
+    const headers = Object.assign({}, sec, {
       'Content-Type': MIME[ext] || 'application/octet-stream',
       'Cache-Control': cacheable.includes(ext) ? 'public, max-age=31536000, immutable' : 'no-cache'
     });

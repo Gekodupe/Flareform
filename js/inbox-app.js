@@ -115,8 +115,42 @@ function inboxSelect(id) {
       Number(item.spamScore || 0).toFixed(2) +
       (item.isSpam ? ' · spam' : '');
   }
+  var payload = item.payload || {};
+  var images = Array.isArray(payload._images) ? payload._images : [];
+  var imagesEl = document.getElementById('inbox-detail-images');
+  if (imagesEl) {
+    if (!images.length) {
+      imagesEl.hidden = true;
+      imagesEl.innerHTML = '';
+    } else {
+      imagesEl.hidden = false;
+      imagesEl.innerHTML = images
+        .map(function (img) {
+          var src =
+            img && img.id
+              ? fbApiBase() + '/v1/files/' + encodeURIComponent(img.id)
+              : (img && img.url) || '';
+          var name = (img && (img.name || img.id)) || 'image';
+          if (!src) return '';
+          return (
+            '<a class="fb-inbox-image" href="' +
+            src +
+            '" target="_blank" rel="noopener noreferrer">' +
+            '<img src="' +
+            src +
+            '" alt="' +
+            String(name).replace(/"/g, '&quot;') +
+            '" loading="lazy">' +
+            '</a>'
+          );
+        })
+        .join('');
+    }
+  }
+  var displayPayload = Object.assign({}, payload);
+  delete displayPayload._images;
   var pre = document.getElementById('inbox-detail-json');
-  if (pre) pre.textContent = JSON.stringify(item.payload || {}, null, 2);
+  if (pre) pre.textContent = JSON.stringify(displayPayload, null, 2);
   document.querySelectorAll('#inbox-body tr').forEach(function (tr) {
     tr.classList.toggle('selected', tr.getAttribute('data-id') === id);
   });

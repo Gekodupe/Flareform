@@ -4,6 +4,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { buildHeadersFile } = require('./security-policy');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, '.pages-dist');
@@ -44,6 +45,8 @@ function copyDir(src, dest) {
     else copyFile(from, to);
   }
 }
+
+fs.writeFileSync(path.join(ROOT, '_headers'), buildHeadersFile());
 
 rmrf(OUT);
 fs.mkdirSync(OUT, { recursive: true });

@@ -1672,6 +1672,13 @@ tr:nth-child(even) td { background: var(--surface); color: #fff !important; }
   .fb-stat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  /* 5th Unread card: center under the 2x2 row on mobile */
+  #overview-stats.fb-stat-grid > .fb-stat:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: calc((100% - 12px) / 2);
+  }
   .fb-stat-grid--3 {
     grid-template-columns: 1fr;
   }
@@ -2888,6 +2895,25 @@ section.docs-panel.current {
   word-break: break-word;
   margin: 12px 0;
 }
+.fb-inbox-images {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.fb-inbox-image {
+  display: block;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-surface-raised);
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+.fb-inbox-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .fb-table th {
   background: var(--surface);
   color: #fff;
@@ -2954,6 +2980,12 @@ section.docs-panel.current {
   }
   .fb-stat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #overview-stats.fb-stat-grid > .fb-stat:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 100%;
+    max-width: calc((100% - 12px) / 2);
   }
   .fb-inbox-layout {
     flex-direction: column;
@@ -3047,13 +3079,14 @@ section.docs-panel.current {
   margin-right: auto;
 }
 
+/* Dashboard tabs: left titles (override section > h1 center default) */
 #s-1 > h1,
 #s-1 > .tool-intro,
 #s-2 > h1,
 #s-2 > .tool-intro,
 #s-9 > h1,
 #s-9 > .tool-intro {
-  text-align: left;
+  text-align: left !important;
   max-width: none;
   margin-left: 0;
   margin-right: 0;
