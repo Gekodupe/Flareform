@@ -1689,6 +1689,20 @@ tr:nth-child(even) td { background: var(--surface); color: #fff !important; }
     width: 100%;
     position: static;
   }
+  .fb-inbox-layout > .fb-table-wrap,
+  .fb-table-wrap {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+  }
+  .fb-table {
+    min-width: 0;
+    width: 100%;
+  }
+  .fb-table th,
+  .fb-table td {
+    padding: 10px 12px;
+  }
   .fb-panel,
   #s-3 #analytics-body,
   #s-4 #projects-workspace,
@@ -2926,6 +2940,26 @@ section.docs-panel.current {
   border-bottom: 1px solid var(--border);
   vertical-align: top;
 }
+.fb-table-wrap {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.fb-inbox-layout > .fb-table-wrap {
+  flex: 1 1 auto;
+}
+.fb-table {
+  width: 100%;
+  min-width: 480px;
+  table-layout: auto;
+}
+.fb-table tbody td[colspan] {
+  color: var(--color-text-secondary, #484848) !important;
+  background: #fff !important;
+  white-space: normal;
+  line-height: 1.45;
+}
 .fb-table tr.fb-row {
   cursor: pointer;
 }
@@ -2993,6 +3027,14 @@ section.docs-panel.current {
   .fb-detail {
     width: 100%;
     position: static;
+  }
+  .fb-inbox-layout > .fb-table-wrap {
+    flex: none;
+    width: 100%;
+  }
+  .fb-table {
+    min-width: 0;
+    width: 100%;
   }
 }
 

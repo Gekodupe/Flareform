@@ -129,7 +129,7 @@ function inboxSelect(id) {
           var src =
             img && img.id
               ? fbApiBase() + '/v1/files/' + encodeURIComponent(img.id)
-              : (img && img.url) || '';
+              : '';
           var name = (img && (img.name || img.id)) || 'image';
           if (!src) return '';
           return (

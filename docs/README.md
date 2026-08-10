@@ -21,12 +21,12 @@
 
 ## Next
 
-- [Quick start](#/quickstart)
-- [API reference](#/api)
-- [Self-host](#/self-host)
-- [Forms & email](#/forms)
-- [Logs](#/logs)
-- [Images](#/images)
-- [Plans](#/plans)
-- [Errors](#/errors)
-- [Security](#/security)
+- [Quick start](quickstart.md)
+- [API reference](api.md)
+- [Self-host](self-host.md)
+- [Forms & email](forms.md)
+- [Logs](logs.md)
+- [Images](images.md)
+- [Plans](plans.md)
+- [Errors](errors.md)
+- [Security](security.md)
