@@ -101,7 +101,9 @@ Sort values: `newest`, `oldest`, `project`, `score` (inbox) / `count` (logs), `l
 
 ## Files
 
-`GET /v1/files/{img_id}` - public image bytes from a submission.
+`GET /v1/files/{img_id}?t={token}` - image bytes from a submission.
+
+Requires the read token from `_images[].token` (query `t`), or a Bearer session/API key for the project owner. Without either, the API returns 404. Uploads are magic-byte validated (JPEG/PNG/GIF/WebP only).
 
 ## Analytics
 

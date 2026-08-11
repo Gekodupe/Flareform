@@ -20,7 +20,9 @@ cp .dev.vars.example .dev.vars
 npx wrangler d1 create flareboard   # hosted prod uses this D1 name; any name works if wrangler.jsonc matches
 # update wrangler.jsonc database_id + KV id
 npx wrangler kv namespace create FLAREFORM
-npm run db:remote
+# Fresh DB: apply full schema. Existing DB: run ordered migrations.
+npm run db:schema:remote
+# or: npm run db:migrate:remote
 npm run deploy
 ```
 
@@ -36,6 +38,8 @@ localStorage.setItem('flareform_api_base', 'https://YOUR_SUBDOMAIN.workers.dev')
 - `_next` / `_redirect` only allowlisted origins (or your `APP_ORIGIN` when the allowlist is empty).
 - Enable Turnstile only when `TURNSTILE_SECRET` is configured (verification fails closed).
 - Auth, support, and ingest are rate-limited via the Workers Rate Limiting binding.
+- Verify email before creating projects, opening billing, or minting API keys.
+- Image URLs include a read token (`?t=`); do not strip it from `_images`.
 
 ## Edge spam / dedupe
 

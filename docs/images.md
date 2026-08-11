@@ -10,7 +10,7 @@ Image uploads use a **separate monthly image quota** (not the same counter as fo
 | Starter | 2,000 | 2 MB |
 | Pro | 20,000 | 2 MB |
 
-Types: `image/jpeg`, `image/png`, `image/gif`, `image/webp`. Max **5 images** per submission.
+Types: `image/jpeg`, `image/png`, `image/gif`, `image/webp` (magic-byte checked). Max **5 images** per submission.
 
 ## Multipart example
 
@@ -22,8 +22,10 @@ Types: `image/jpeg`, `image/png`, `image/gif`, `image/webp`. Max **5 images** pe
 </form>
 ```
 
-Stored images appear in the submission payload as `_images` with public URLs:
+Stored images appear in the submission payload as `_images` with **tokenized** URLs:
 
 ```text
-GET https://flareform-api.nic-58f.workers.dev/v1/files/img_…
+GET https://flareform-api.nic-58f.workers.dev/v1/files/img_…?t=…
 ```
+
+Access requires the `t` query token from `_images`, or a session/API key for the project owner. Unauthenticated requests without a valid token return 404.

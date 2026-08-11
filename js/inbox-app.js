@@ -124,27 +124,8 @@ function inboxSelect(id) {
       imagesEl.innerHTML = '';
     } else {
       imagesEl.hidden = false;
-      imagesEl.innerHTML = images
-        .map(function (img) {
-          var src =
-            img && img.id
-              ? fbApiBase() + '/v1/files/' + encodeURIComponent(img.id)
-              : '';
-          var name = (img && (img.name || img.id)) || 'image';
-          if (!src) return '';
-          return (
-            '<a class="fb-inbox-image" href="' +
-            src +
-            '" target="_blank" rel="noopener noreferrer">' +
-            '<img src="' +
-            src +
-            '" alt="' +
-            String(name).replace(/"/g, '&quot;') +
-            '" loading="lazy">' +
-            '</a>'
-          );
-        })
-        .join('');
+      imagesEl.innerHTML = '';
+      inboxRenderImages(images, imagesEl);
     }
   }
   var displayPayload = Object.assign({}, payload);
@@ -154,6 +135,48 @@ function inboxSelect(id) {
   document.querySelectorAll('#inbox-body tr').forEach(function (tr) {
     tr.classList.toggle('selected', tr.getAttribute('data-id') === id);
   });
+}
+
+async function inboxRenderImages(images, imagesEl) {
+  fbLoadSession();
+  for (var i = 0; i < images.length; i++) {
+    var img = images[i];
+    if (!img || !img.id) continue;
+    var name = img.name || img.id || 'image';
+    var src = '';
+    if (img.token) {
+      src =
+        fbApiBase() +
+        '/v1/files/' +
+        encodeURIComponent(img.id) +
+        '?t=' +
+        encodeURIComponent(img.token);
+    } else if (fbSession) {
+      try {
+        var res = await fetch(fbApiBase() + '/v1/files/' + encodeURIComponent(img.id), {
+          headers: { Authorization: 'Bearer ' + fbSession }
+        });
+        if (res.ok) {
+          var blob = await res.blob();
+          src = URL.createObjectURL(blob);
+        }
+      } catch (e) {
+        src = '';
+      }
+    }
+    if (!src) continue;
+    var a = document.createElement('a');
+    a.className = 'fb-inbox-image';
+    a.href = src;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    var el = document.createElement('img');
+    el.src = src;
+    el.alt = String(name);
+    el.loading = 'lazy';
+    a.appendChild(el);
+    imagesEl.appendChild(a);
+  }
 }
 
 async function inboxMarkRead() {
