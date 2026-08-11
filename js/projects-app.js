@@ -39,7 +39,6 @@ async function projectsCreate() {
   }
   var name = String((document.getElementById('project-name') || {}).value || '').trim();
   var origins = String((document.getElementById('project-origins') || {}).value || '').trim();
-  var notifyEmail = String((document.getElementById('project-notify') || {}).value || '').trim();
   var notifyOn = !!(document.getElementById('project-notify-on') || {}).checked;
   var turnstile = !!(document.getElementById('project-turnstile') || {}).checked;
   var logsOn = !!(document.getElementById('project-logs-on') || {}).checked;
@@ -54,7 +53,6 @@ async function projectsCreate() {
         name: name,
         allowedOrigins: origins,
         turnstileEnabled: turnstile,
-        notifyEmail: notifyEmail || fbEmail,
         notifyEnabled: notifyOn,
         logsEnabled: logsOn
       }
@@ -124,6 +122,7 @@ async function projectsRefresh() {
     var data = await fbFetch('/v1/projects?sort=' + encodeURIComponent(sort));
     var projects = data.projects || [];
     window._fbProjectsCache = projects;
+    list.innerHTML = '';
     if (!projects.length) {
       list.innerHTML =
         '<div class="auth-card"><p class="auth-card-title">No projects yet</p>' +
@@ -131,75 +130,133 @@ async function projectsRefresh() {
       return;
     }
     var base = fbApiBase();
-    list.innerHTML = projects
-      .map(function (p) {
-        var url = base + '/f/' + p.id;
-        var logUrl = base + '/l/' + p.id;
-        var logsOn = Number(p.logs_enabled) === 1;
-        var snippet = formSnippet(url);
-        return (
-          '<div class="auth-card fb-project-card" data-id="' +
-          escAttr(p.id) +
-          '">' +
-          '<p class="auth-card-title">' +
-          esc(p.name) +
-          '</p>' +
-          '<p class="auth-card-desc">Form endpoint</p>' +
-          '<input class="auth-input" readonly value="' +
-          escAttr(url) +
-          '" onclick="this.select()">' +
-          '<div class="auth-actions auth-actions-wrap" style="margin-top:10px;">' +
-          '<button type="button" class="auth-primary" onclick="projectsCopy(\'' +
-          escAttr(url) +
-          '\')">Copy form endpoint</button>' +
-          '<button type="button" class="secondary-btn" onclick="projectsCopySnippet(\'' +
-          escAttr(url) +
-          '\')">Copy HTML form</button>' +
-          '<button type="button" class="secondary-btn" onclick="projectsDelete(\'' +
-          escAttr(p.id) +
-          '\')">Delete</button>' +
-          '</div>' +
-          '<p class="auth-card-desc" style="margin-top:14px;">Error log endpoint ' +
-          (logsOn ? '(on)' : '(off)') +
-          '</p>' +
-          '<input class="auth-input" readonly value="' +
-          escAttr(logUrl) +
-          '" onclick="this.select()">' +
-          '<div class="auth-actions auth-actions-wrap" style="margin-top:10px;">' +
-          '<button type="button" class="secondary-btn" onclick="projectsToggleLogs(\'' +
-          escAttr(p.id) +
-          "', " +
-          (logsOn ? 'false' : 'true') +
-          ')">' +
-          (logsOn ? 'Disable logs' : 'Enable logs') +
-          '</button>' +
-          (logsOn
-            ? '<button type="button" class="secondary-btn" onclick="projectsCopyLogSnippet(\'' +
-              escAttr(logUrl) +
-              '\')">Copy log snippet</button>'
-            : '') +
-          '</div>' +
-          '<p class="auth-card-desc" style="margin-top:14px;">HTML form example</p>' +
-          '<pre class="fb-pre">' +
-          esc(snippet) +
-          '</pre>' +
-          '<p class="auth-card-desc" style="margin-top:10px;">' +
-          Number(p.submission_count || 0) +
-          ' forms · ' +
-          Number(p.log_count || 0) +
-          ' logs · ' +
-          Number(p.spam_count || 0) +
-          ' spam · notify ' +
-          (Number(p.notify_enabled) === 0 ? 'off' : esc(p.notify_email || 'owner')) +
-          ' · Turnstile ' +
-          (Number(p.turnstile_enabled) ? 'on' : 'off') +
-          '</p>' +
-          '</div>'
-        );
-      })
-      .join('');
+    projects.forEach(function (p) {
+      var url = base + '/f/' + p.id;
+      var logUrl = base + '/l/' + p.id;
+      var logsOn = Number(p.logs_enabled) === 1;
+      var snippet = formSnippet(url);
+      var card = document.createElement('div');
+      card.className = 'auth-card fb-project-card';
+      card.dataset.id = p.id;
+
+      var title = document.createElement('p');
+      title.className = 'auth-card-title';
+      title.textContent = p.name || '';
+      card.appendChild(title);
+
+      var formLabel = document.createElement('p');
+      formLabel.className = 'auth-card-desc';
+      formLabel.textContent = 'Form endpoint';
+      card.appendChild(formLabel);
+
+      var formInput = document.createElement('input');
+      formInput.className = 'auth-input';
+      formInput.readOnly = true;
+      formInput.value = url;
+      formInput.addEventListener('focus', function () {
+        formInput.select();
+      });
+      card.appendChild(formInput);
+
+      var formActions = document.createElement('div');
+      formActions.className = 'auth-actions auth-actions-wrap';
+      formActions.style.marginTop = '10px';
+      var copyForm = document.createElement('button');
+      copyForm.type = 'button';
+      copyForm.className = 'auth-primary';
+      copyForm.textContent = 'Copy form endpoint';
+      copyForm.addEventListener('click', function () {
+        projectsCopy(url);
+      });
+      var copyHtml = document.createElement('button');
+      copyHtml.type = 'button';
+      copyHtml.className = 'secondary-btn';
+      copyHtml.textContent = 'Copy HTML form';
+      copyHtml.addEventListener('click', function () {
+        projectsCopySnippet(url);
+      });
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'secondary-btn';
+      delBtn.textContent = 'Delete';
+      delBtn.addEventListener('click', function () {
+        projectsDelete(p.id);
+      });
+      formActions.appendChild(copyForm);
+      formActions.appendChild(copyHtml);
+      formActions.appendChild(delBtn);
+      card.appendChild(formActions);
+
+      var logLabel = document.createElement('p');
+      logLabel.className = 'auth-card-desc';
+      logLabel.style.marginTop = '14px';
+      logLabel.textContent = 'Error log endpoint ' + (logsOn ? '(on)' : '(off)');
+      card.appendChild(logLabel);
+
+      var logInput = document.createElement('input');
+      logInput.className = 'auth-input';
+      logInput.readOnly = true;
+      logInput.value = logUrl;
+      logInput.addEventListener('focus', function () {
+        logInput.select();
+      });
+      card.appendChild(logInput);
+
+      var logActions = document.createElement('div');
+      logActions.className = 'auth-actions auth-actions-wrap';
+      logActions.style.marginTop = '10px';
+      var toggleLogs = document.createElement('button');
+      toggleLogs.type = 'button';
+      toggleLogs.className = 'secondary-btn';
+      toggleLogs.textContent = logsOn ? 'Disable logs' : 'Enable logs';
+      toggleLogs.addEventListener('click', function () {
+        projectsToggleLogs(p.id, !logsOn);
+      });
+      logActions.appendChild(toggleLogs);
+      if (logsOn) {
+        var copyLog = document.createElement('button');
+        copyLog.type = 'button';
+        copyLog.className = 'secondary-btn';
+        copyLog.textContent = 'Copy log snippet';
+        copyLog.addEventListener('click', function () {
+          projectsCopyLogSnippet(logUrl);
+        });
+        logActions.appendChild(copyLog);
+      }
+      card.appendChild(logActions);
+
+      var snipLabel = document.createElement('p');
+      snipLabel.className = 'auth-card-desc';
+      snipLabel.style.marginTop = '14px';
+      snipLabel.textContent = 'HTML form example';
+      card.appendChild(snipLabel);
+      var pre = document.createElement('pre');
+      pre.className = 'fb-pre';
+      pre.textContent = snippet;
+      card.appendChild(pre);
+
+      var meta = document.createElement('p');
+      meta.className = 'auth-card-desc';
+      meta.style.marginTop = '10px';
+      meta.textContent =
+        Number(p.submission_count || 0) +
+        ' forms · ' +
+        Number(p.log_count || 0) +
+        ' logs · ' +
+        Number(p.spam_count || 0) +
+        ' spam · notify ' +
+        (Number(p.notify_enabled) === 0 ? 'off' : p.notify_email || 'owner') +
+        ' · Turnstile ' +
+        (Number(p.turnstile_enabled) ? 'on' : 'off');
+      card.appendChild(meta);
+      list.appendChild(card);
+    });
   } catch (e) {
-    list.innerHTML = '<p class="auth-card-desc">' + esc(e.message || 'Failed to load') + '</p>';
+    list.textContent = '';
+    var err = document.createElement('p');
+    err.className = 'auth-card-desc';
+    err.textContent = e.message || 'Failed to load';
+    list.appendChild(err);
   }
 }
 
@@ -247,7 +304,15 @@ function projectsCopyLogSnippet(url) {
 }
 
 async function projectsDelete(id) {
-  if (!confirm('Delete this project and all submissions/logs?')) return;
+  if (!(await (typeof fbConfirm === 'function'
+    ? fbConfirm('Delete this project and all submissions/logs? This cannot be undone.', {
+        title: 'Delete project',
+        confirmLabel: 'Delete',
+        danger: true
+      })
+    : Promise.resolve(window.confirm('Delete this project and all submissions/logs?'))))) {
+    return;
+  }
   try {
     await fbFetch('/v1/projects/' + id, { method: 'DELETE' });
     showToast('Project deleted', 'success');

@@ -1,10 +1,25 @@
 // Shared Flareform API client + session storage
-var FLAREFORM_API_BASE =
-  (typeof localStorage !== 'undefined' && localStorage.getItem('flareform_api_base')) ||
-  (typeof location !== 'undefined' &&
-  (location.hostname === '127.0.0.1' || location.hostname === 'localhost')
-    ? 'http://127.0.0.1:8787'
-    : 'https://flareform-api.nic-58f.workers.dev');
+function fbResolveApiBase() {
+  var host =
+    typeof location !== 'undefined' ? String(location.hostname || '') : '';
+  var isLocal = host === '127.0.0.1' || host === 'localhost';
+  // Only honor localStorage override on localhost (prevents XSS → token exfil via fake API)
+  if (isLocal && typeof localStorage !== 'undefined') {
+    try {
+      var override = localStorage.getItem('flareform_api_base');
+      if (override && /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/?$/i.test(override.replace(/\/+$/, ''))) {
+        return override.replace(/\/+$/, '');
+      }
+      if (override && /^https?:\/\/(127\.0\.0\.1|localhost):\d+$/i.test(override)) {
+        return override.replace(/\/+$/, '');
+      }
+    } catch (e) { /* ignore */ }
+  }
+  if (isLocal) return 'http://127.0.0.1:8787';
+  return 'https://flareform-api.nic-58f.workers.dev';
+}
+
+var FLAREFORM_API_BASE = fbResolveApiBase();
 
 var fbSession = '';
 var fbEmail = '';
@@ -13,26 +28,49 @@ function fbStorageKey(name) {
   return 'flareform_' + name;
 }
 
+function fbPersistentStore(remember) {
+  try {
+    if (remember === false) return sessionStorage;
+    if (remember === true) return localStorage;
+    // Prefer whichever already has a session
+    if (sessionStorage.getItem(fbStorageKey('session'))) return sessionStorage;
+    return localStorage;
+  } catch (e) {
+    return localStorage;
+  }
+}
+
 function fbLoadSession() {
   try {
-    fbSession = localStorage.getItem(fbStorageKey('session')) || '';
-    fbEmail = localStorage.getItem(fbStorageKey('email')) || '';
+    var store = fbPersistentStore();
+    fbSession = store.getItem(fbStorageKey('session')) || '';
+    fbEmail = store.getItem(fbStorageKey('email')) || '';
+    if (!fbSession && store !== localStorage) {
+      fbSession = localStorage.getItem(fbStorageKey('session')) || '';
+      fbEmail = localStorage.getItem(fbStorageKey('email')) || '';
+    }
+    if (!fbSession && store !== sessionStorage) {
+      fbSession = sessionStorage.getItem(fbStorageKey('session')) || '';
+      fbEmail = sessionStorage.getItem(fbStorageKey('email')) || '';
+    }
   } catch (e) {
     fbSession = '';
     fbEmail = '';
   }
 }
 
-function fbSaveSession(session, email) {
+function fbSaveSession(session, email, rememberMe) {
   fbSession = session || '';
   fbEmail = email || '';
   try {
+    localStorage.removeItem(fbStorageKey('session'));
+    localStorage.removeItem(fbStorageKey('email'));
+    sessionStorage.removeItem(fbStorageKey('session'));
+    sessionStorage.removeItem(fbStorageKey('email'));
     if (fbSession) {
-      localStorage.setItem(fbStorageKey('session'), fbSession);
-      localStorage.setItem(fbStorageKey('email'), fbEmail);
-    } else {
-      localStorage.removeItem(fbStorageKey('session'));
-      localStorage.removeItem(fbStorageKey('email'));
+      var store = rememberMe ? localStorage : sessionStorage;
+      store.setItem(fbStorageKey('session'), fbSession);
+      store.setItem(fbStorageKey('email'), fbEmail);
     }
   } catch (e) { /* ignore */ }
 }

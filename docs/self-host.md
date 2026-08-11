@@ -43,4 +43,4 @@ localStorage.setItem('flareform_api_base', 'https://YOUR_SUBDOMAIN.workers.dev')
 
 ## Edge spam / dedupe
 
-Set `GECKODUPE_SPAM_URL` and `GECKODUPE_API_KEY` (a `gd_live_…` key from your Geckodupe account). Without a key, Flareform falls back to a local spam heuristic and local log fingerprints. Dedupe against Geckodupe requires both URL and key. Default `SPAM_FAIL_MODE=fail-open` keeps ingest available if the spam API is down.
+Set `GECKODUPE_SPAM_URL` and `GECKODUPE_API_KEY` (a `gd_live_…` key from your Geckodupe account). Without a key, Flareform falls back to a local spam heuristic and local log fingerprints. Dedupe against Geckodupe requires both URL and key. Production uses `SPAM_FAIL_MODE=fail-closed` so spam-API outages do not silently accept mail; local `.dev.vars` may use `fail-open` for easier development.

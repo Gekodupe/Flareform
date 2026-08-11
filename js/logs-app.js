@@ -25,11 +25,18 @@ function logsPreview(payload) {
   if (!payload || typeof payload !== 'object') return '-';
   var msg = payload.message || payload.error || payload.msg || '';
   if (msg) return String(msg).slice(0, 80);
-  var keys = Object.keys(payload);
+  var keys = Object.keys(payload).filter(function (k) {
+    return !String(k).startsWith('_');
+  });
   if (!keys.length) return '-';
-  return keys.slice(0, 2).map(function (k) {
-    return k + ': ' + String(payload[k]).slice(0, 30);
-  }).join(' · ');
+  return keys
+    .slice(0, 2)
+    .map(function (k) {
+      var v = payload[k];
+      if (v != null && typeof v === 'object') return k + ': {…}';
+      return k + ': ' + String(v).slice(0, 30);
+    })
+    .join(' · ');
 }
 
 function logsQuery(limit) {
@@ -92,20 +99,20 @@ async function logsRefresh() {
           '" data-id="' +
           escAttr(item.id) +
           '">' +
-          '<td>' +
+          '<td data-label="When">' +
           esc(item.createdAt || '') +
           (item.readAt ? '' : ' · unread') +
           '</td>' +
-          '<td>' +
+          '<td data-label="Level">' +
           esc(item.level || 'error') +
           '</td>' +
-          '<td>' +
+          '<td data-label="Project">' +
           esc(item.projectName || item.projectId || '') +
           '</td>' +
-          '<td>' +
+          '<td data-label="Message">' +
           esc(logsPreview(item.payload)) +
           '</td>' +
-          '<td>' +
+          '<td data-label="Count">' +
           Number(item.occurrenceCount || 1) +
           '</td>' +
           '</tr>'
@@ -128,21 +135,53 @@ function logsSelect(id) {
   var item = logsItems.find(function (x) {
     return x.id === id;
   });
-  var detail = document.getElementById('logs-detail');
-  if (!item || !detail) return;
-  detail.hidden = false;
-  var meta = document.getElementById('logs-detail-meta');
-  if (meta) {
-    meta.textContent =
-      (item.projectName || item.projectId) +
-      ' · ' +
-      (item.level || 'error') +
-      ' · ×' +
-      Number(item.occurrenceCount || 1) +
-      (item.readAt ? '' : ' · unread');
+  document.querySelectorAll('#logs-body tr').forEach(function (tr) {
+    tr.classList.toggle('selected', tr.getAttribute('data-id') === id);
+  });
+  if (!item) return;
+  if (typeof fbOpenModal !== 'function') {
+    showToast('UI dialog unavailable', 'error');
+    return;
   }
-  var pre = document.getElementById('logs-detail-json');
-  if (pre) pre.textContent = JSON.stringify(item.payload || {}, null, 2);
+
+  var wrap = document.createElement('div');
+  wrap.className = 'fb-detail-content';
+  var meta = document.createElement('p');
+  meta.className = 'fb-modal-meta';
+  meta.textContent =
+    (item.projectName || item.projectId) +
+    ' · ' +
+    (item.level || 'error') +
+    ' · ×' +
+    Number(item.occurrenceCount || 1) +
+    (item.readAt ? '' : ' · unread') +
+    (item.createdAt ? ' · ' + item.createdAt : '');
+  wrap.appendChild(meta);
+  var pre = document.createElement('pre');
+  pre.className = 'fb-pre';
+  pre.textContent = JSON.stringify(item.payload || {}, null, 2);
+  wrap.appendChild(pre);
+
+  fbOpenModal({
+    title: 'Log event',
+    body: wrap,
+    actions: [
+      {
+        label: 'Mark read',
+        primary: true,
+        onClick: function () {
+          logsMarkRead();
+        }
+      },
+      {
+        label: 'Delete',
+        className: 'fb-btn-danger',
+        onClick: function () {
+          logsDelete();
+        }
+      }
+    ]
+  });
 }
 
 async function logsMarkRead() {
@@ -151,6 +190,7 @@ async function logsMarkRead() {
     await fbFetch('/v1/logs/' + logsSelectedId, { method: 'PATCH', body: { read: true } });
     showToast('Marked read', 'success');
     await logsRefresh();
+    logsSelect(logsSelectedId);
   } catch (e) {
     showToast(e.message || 'Update failed', 'error');
   }
@@ -158,12 +198,22 @@ async function logsMarkRead() {
 
 async function logsDelete() {
   if (!logsSelectedId) return;
-  if (!confirm('Delete this log event?')) return;
+  var ok =
+    typeof fbConfirm === 'function'
+      ? await fbConfirm('Delete this log event? This cannot be undone.', {
+          title: 'Delete log',
+          confirmLabel: 'Delete',
+          danger: true
+        })
+      : window.confirm('Delete this log event?');
+  if (!ok) {
+    if (logsSelectedId) logsSelect(logsSelectedId);
+    return;
+  }
   try {
     await fbFetch('/v1/logs/' + logsSelectedId, { method: 'DELETE' });
     logsSelectedId = '';
-    var detail = document.getElementById('logs-detail');
-    if (detail) detail.hidden = true;
+    if (typeof fbCloseModal === 'function') fbCloseModal();
     showToast('Deleted', 'success');
     await logsRefresh();
   } catch (e) {

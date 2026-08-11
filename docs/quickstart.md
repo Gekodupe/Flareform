@@ -36,7 +36,7 @@ curl -X POST https://flareform-api.nic-58f.workers.dev/f/prj_YOUR_ID \
 
 ## 4. Read submissions
 
-Open **Inbox**. Enable **Notify email** on the project for form-to-email.
+Open **Inbox**. Enable **Email me new form submissions** on the project for form-to-email (always sent to your account email).
 
 ## 5. Optional: error logs
 

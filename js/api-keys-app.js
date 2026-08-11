@@ -248,7 +248,16 @@ async function apiKeysRevoke(id) {
     apiKeysRenderSignedOut();
     return;
   }
-  if (!id || !confirm('Revoke this API key? Apps using it will stop working.')) return;
+  if (!id) return;
+  var ok =
+    typeof fbConfirm === 'function'
+      ? await fbConfirm('Revoke this API key? Apps using it will stop working.', {
+          title: 'Revoke API key',
+          confirmLabel: 'Revoke',
+          danger: true
+        })
+      : window.confirm('Revoke this API key? Apps using it will stop working.');
+  if (!ok) return;
   try {
     await fbFetch('/v1/account/keys/' + encodeURIComponent(id), { method: 'DELETE' });
     showToast('Key revoked', 'success');

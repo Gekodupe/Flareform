@@ -195,17 +195,6 @@
               </tbody>
             </table>
           </div>
-          <aside id="inbox-detail" class="auth-card fb-detail" hidden>
-            <p class="auth-card-title">Submission</p>
-            <p class="auth-card-desc" id="inbox-detail-meta"></p>
-            <div id="inbox-detail-images" class="fb-inbox-images" hidden></div>
-            <pre id="inbox-detail-json" class="fb-pre"></pre>
-            <div class="auth-actions auth-actions-wrap">
-              <button type="button" class="auth-primary" onclick="inboxMarkRead()">Mark read</button>
-              <button type="button" class="secondary-btn" onclick="inboxToggleSpam()">Toggle spam</button>
-              <button type="button" class="secondary-btn" onclick="inboxDelete()">Delete</button>
-            </div>
-          </aside>
         </div>
         </div>
       </section>
@@ -273,15 +262,6 @@
                 </tbody>
               </table>
             </div>
-            <aside id="logs-detail" class="auth-card fb-detail" hidden>
-              <p class="auth-card-title">Log event</p>
-              <p class="auth-card-desc" id="logs-detail-meta"></p>
-              <pre id="logs-detail-json" class="fb-pre"></pre>
-              <div class="auth-actions auth-actions-wrap">
-                <button type="button" class="auth-primary" onclick="logsMarkRead()">Mark read</button>
-                <button type="button" class="secondary-btn" onclick="logsDelete()">Delete</button>
-              </div>
-            </aside>
           </div>
         </div>
       </section>
@@ -364,7 +344,8 @@
             </div>
             <div class="auth-field">
               <label for="project-notify">Notify email</label>
-              <input type="email" id="project-notify" class="auth-input" placeholder="you@company.com" autocomplete="email">
+              <input type="email" id="project-notify" class="auth-input" placeholder="Account email" autocomplete="email" readonly disabled>
+              <p class="auth-card-desc" style="margin-top:6px">Notifications always go to your signed-in account email.</p>
             </div>
             <div class="auth-field">
               <label for="project-origins">Allowed origins (comma-separated, blank = any)</label>

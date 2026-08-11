@@ -47,7 +47,13 @@ async function analyticsRefresh() {
     setText('an-rate', forms ? Math.round((spam / forms) * 100) + '%' : '0%');
     await renderAnalyticsChart(data.byDay || []);
   } catch (e) {
-    if (chart) chart.innerHTML = '<p class="fb-empty-msg">' + (e.message || 'Failed to load') + '</p>';
+    if (chart) {
+      chart.textContent = '';
+      var errP = document.createElement('p');
+      errP.className = 'fb-empty-msg';
+      errP.textContent = e.message || 'Failed to load';
+      chart.appendChild(errP);
+    }
     var card = document.getElementById('analytics-chart-card');
     if (card) card.classList.add('is-empty');
     showToast(e.message || 'Analytics failed', 'error');

@@ -73,8 +73,9 @@
 
   function ensureTabScripts(tabId) {
     var scripts = TAB_SCRIPTS[String(tabId)];
-    if (!scripts || !scripts.length) return Promise.resolve();
-    return Promise.all(scripts.map(loadAppScript));
+    var base = ['js/ui-dialog.js'];
+    var list = base.concat(scripts || []);
+    return Promise.all(list.map(loadAppScript));
   }
 
   global.ensureTabScripts = ensureTabScripts;

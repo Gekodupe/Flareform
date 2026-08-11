@@ -7,29 +7,38 @@ function acctStorageKey(name) {
 }
 
 function acctLoadSession() {
+  if (typeof fbLoadSession === 'function') fbLoadSession();
   try {
-    acctSession = localStorage.getItem(acctStorageKey('session')) || '';
-    acctEmail = localStorage.getItem(acctStorageKey('email')) || '';
+    acctSession = (typeof fbSession === 'string' && fbSession) || '';
+    acctEmail = (typeof fbEmail === 'string' && fbEmail) || '';
+    if (!acctSession) {
+      acctSession = localStorage.getItem(acctStorageKey('session')) || sessionStorage.getItem(acctStorageKey('session')) || '';
+      acctEmail = localStorage.getItem(acctStorageKey('email')) || sessionStorage.getItem(acctStorageKey('email')) || '';
+    }
   } catch (e) {
     acctSession = '';
     acctEmail = '';
   }
-  if (typeof fbSaveSession === 'function') fbSaveSession(acctSession, acctEmail);
 }
 
-function acctSaveSession(session, email) {
+function acctSaveSession(session, email, rememberMe) {
   acctSession = session || '';
   acctEmail = email || '';
+  if (typeof fbSaveSession === 'function') {
+    fbSaveSession(acctSession, acctEmail, rememberMe !== false && rememberMe !== undefined ? !!rememberMe : acctRememberMe());
+    return;
+  }
   try {
+    localStorage.removeItem(acctStorageKey('session'));
+    localStorage.removeItem(acctStorageKey('email'));
+    sessionStorage.removeItem(acctStorageKey('session'));
+    sessionStorage.removeItem(acctStorageKey('email'));
     if (acctSession) {
-      localStorage.setItem(acctStorageKey('session'), acctSession);
-      localStorage.setItem(acctStorageKey('email'), acctEmail);
-    } else {
-      localStorage.removeItem(acctStorageKey('session'));
-      localStorage.removeItem(acctStorageKey('email'));
+      var store = rememberMe ? localStorage : sessionStorage;
+      store.setItem(acctStorageKey('session'), acctSession);
+      store.setItem(acctStorageKey('email'), acctEmail);
     }
   } catch (e) { /* ignore */ }
-  if (typeof fbSaveSession === 'function') fbSaveSession(acctSession, acctEmail);
 }
 
 function acctSetStatus(msg) {
@@ -136,10 +145,12 @@ async function acctRegister() {
       method: 'POST',
       body: { email: email, password: password, rememberMe: acctRememberMe() }
     });
-    acctSaveSession(res.session, res.email);
-    await acctRefreshAccount();
+    if (res.session) {
+      acctSaveSession(res.session, res.email, acctRememberMe());
+      await acctRefreshAccount();
+    }
     acctSetStatus(res.message || 'Account created');
-    showToast(res.emailSent === false ? (res.message || 'Account created') : 'Account created', res.emailSent === false ? 'warning' : 'success');
+    showToast(res.message || 'Account created', res.emailSent === false ? 'warning' : 'success');
   } catch (e) {
     acctSetStatus(e.message || 'Could not register');
     showToast(e.message || 'Register failed', 'error');
@@ -159,7 +170,7 @@ async function acctLogin() {
       method: 'POST',
       body: { email: email, password: password, rememberMe: acctRememberMe() }
     });
-    acctSaveSession(res.session, res.email);
+    acctSaveSession(res.session, res.email, acctRememberMe());
     await acctRefreshAccount();
     acctSetStatus('Signed in as ' + res.email);
     showToast('Signed in', 'success');
@@ -256,7 +267,7 @@ async function acctVerify(tokenOrCode) {
   try {
     acctSetStatus('Verifying...');
     var res = await acctFetch('/v1/auth/verify', { method: 'POST', body: body });
-    acctSaveSession(res.session, res.email);
+    acctSaveSession(res.session, res.email, acctRememberMe());
     await acctRefreshAccount();
     acctSetStatus('Signed in as ' + res.email);
     showToast('Signed in', 'success');

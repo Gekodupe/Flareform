@@ -53,12 +53,13 @@ Create body:
 {
   "name": "Contact",
   "allowedOrigins": "https://example.com",
-  "notifyEmail": "you@example.com",
   "notifyEnabled": true,
   "turnstileEnabled": false,
   "logsEnabled": true
 }
 ```
+
+`notifyEmail` is ignored; notifications always go to the project owner account email.
 
 ## Form ingest
 

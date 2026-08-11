@@ -17,15 +17,15 @@ Set `action` to your project endpoint and `method="POST"`.
 
 ## Form-to-email
 
-On **Projects**, set **Notify email** and leave **Email me new form submissions** checked.
+On **Projects**, leave **Email me new form submissions** checked. Notifications always go to the signed-in account email.
 
-Non-spam submissions trigger a Brevo transactional email to that address with the field table.
+Non-spam submissions trigger a Brevo transactional email with the field table.
 
-Spam-scored submissions are stored in Inbox but do not email.
+Spam-scored submissions are stored in Inbox for review, do not email, and do not count toward the monthly submission quota.
 
 ## Origins & Turnstile
 
-- **Allowed origins** - comma-separated; blank = any
+- **Allowed origins** - comma-separated; blank = any. When set, browser `Origin` or `Referer` must match (requests with neither are rejected).
 - **Turnstile** - require `cf-turnstile-response` when enabled
 
 ## AJAX / fetch

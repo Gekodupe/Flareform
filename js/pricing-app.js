@@ -9,38 +9,58 @@ function pricingRenderPlans(payload) {
   if (!grid) return;
   var plans = (payload && payload.plans) || [];
   var stripeOn = !!(payload && payload.stripeConfigured);
-  grid.innerHTML = '';
+  grid.textContent = '';
 
   plans.forEach(function (p) {
     var card = document.createElement('article');
     card.className = 'pricing-card';
-    var cta = '';
+
+    var nameEl = document.createElement('p');
+    nameEl.className = 'pricing-card-name';
+    nameEl.textContent = p.name || '';
+    card.appendChild(nameEl);
+
+    var priceEl = document.createElement('p');
+    priceEl.className = 'pricing-card-price';
+    priceEl.appendChild(document.createTextNode(pricingFmtMoney(p.priceMonthly)));
+    var period = document.createElement('span');
+    period.className = 'pricing-card-period';
+    period.textContent = '/mo';
+    priceEl.appendChild(period);
+    card.appendChild(priceEl);
+
+    var blurb = document.createElement('p');
+    blurb.className = 'pricing-card-blurb';
+    blurb.textContent = p.blurb || '';
+    card.appendChild(blurb);
+
+    var ul = document.createElement('ul');
+    ul.className = 'pricing-card-features';
+    (p.features || []).forEach(function (f) {
+      var li = document.createElement('li');
+      li.textContent = f;
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
     if (p.id === 'free') {
-      cta = '<button type="button" onclick="switchToTab(\'6\')">Get started</button>';
+      btn.textContent = 'Get started';
+      btn.addEventListener('click', function () {
+        switchToTab('6');
+      });
     } else if (stripeOn && p.priceId) {
-      cta = '<button type="button" onclick="pricingCheckout(\'' + p.id + '\')">Upgrade</button>';
+      btn.textContent = 'Upgrade';
+      btn.addEventListener('click', function () {
+        pricingCheckout(p.id);
+      });
     } else {
-      cta = '<button type="button" class="secondary-btn" disabled>Stripe setup required</button>';
+      btn.className = 'secondary-btn';
+      btn.disabled = true;
+      btn.textContent = 'Stripe setup required';
     }
-    var feats = (p.features || [])
-      .map(function (f) {
-        return '<li>' + f + '</li>';
-      })
-      .join('');
-    card.innerHTML =
-      '<p class="pricing-card-name">' +
-      p.name +
-      '</p>' +
-      '<p class="pricing-card-price">' +
-      pricingFmtMoney(p.priceMonthly) +
-      '<span class="pricing-card-period">/mo</span></p>' +
-      '<p class="pricing-card-blurb">' +
-      (p.blurb || '') +
-      '</p>' +
-      '<ul class="pricing-card-features">' +
-      feats +
-      '</ul>' +
-      cta;
+    card.appendChild(btn);
     grid.appendChild(card);
   });
 }

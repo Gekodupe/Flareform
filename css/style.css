@@ -3162,3 +3162,220 @@ section.docs-panel.current {
   font-size: 13px;
   color: #484848;
 }
+
+/* ---------- Modals / confirms ---------- */
+html.fb-modal-open,
+body.fb-modal-open {
+  overflow: hidden;
+}
+.fb-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.fb-modal[hidden] {
+  display: none !important;
+}
+.fb-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.48);
+  backdrop-filter: blur(2px);
+}
+.fb-modal-panel {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  max-height: min(88vh, 720px);
+  overflow: auto;
+  background: #fff;
+  border: 1px solid var(--color-border-muted, #e5e5e5);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+  padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.fb-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.fb-modal-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+.fb-modal-x {
+  border: 0;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #484848;
+  padding: 0 4px;
+}
+.fb-modal-x:hover {
+  color: #1a1a1a;
+}
+.fb-modal-body {
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.fb-modal-message,
+.fb-modal-meta {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #484848;
+}
+.fb-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.fb-btn-danger {
+  background: #fff;
+  color: #b42318;
+  border: 1px solid #f2b8b5;
+  padding: 10px 16px;
+  cursor: pointer;
+  font: inherit;
+}
+.fb-btn-danger:hover {
+  background: #fef3f2;
+}
+.fb-detail-content .fb-pre {
+  max-height: min(42vh, 360px);
+}
+
+/* Soften tool tables vs global zebra */
+.fb-table tbody tr:nth-child(even) td {
+  background: #fafafa !important;
+  color: #1a1a1a !important;
+}
+.fb-table tbody tr:nth-child(odd) td {
+  background: #fff !important;
+  color: #1a1a1a !important;
+}
+.fb-table tbody tr.fb-row:hover td,
+.fb-table tbody tr.fb-row.selected td {
+  background: var(--primary-bg, #fff4e8) !important;
+  color: #1a1a1a !important;
+}
+.fb-table th {
+  background: #1a1a1a;
+  color: #fff;
+}
+.fb-pill {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border: 1px solid var(--color-border-muted, #e5e5e5);
+  background: #f7f7f7;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+.fb-pill-form {
+  border-color: #d6ebe3;
+  background: #eef8f3;
+}
+.fb-pill-spam {
+  border-color: #f2b8b5;
+  background: #fef3f2;
+  color: #912018;
+}
+.fb-pill-log {
+  border-color: #e8d9c2;
+  background: #fff8ef;
+}
+
+.fb-inbox-layout {
+  display: block;
+}
+.fb-inbox-layout > .fb-table-wrap {
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .fb-modal {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .fb-modal-panel {
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 12px 12px 0 0;
+    padding: 16px 14px calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+  .fb-modal-actions {
+    flex-direction: column-reverse;
+  }
+  .fb-modal-actions > button {
+    width: 100%;
+  }
+  /* Card-style rows on narrow screens */
+  .fb-table {
+    min-width: 0 !important;
+  }
+  .fb-table thead {
+    display: none;
+  }
+  .fb-table,
+  .fb-table tbody,
+  .fb-table tr,
+  .fb-table td {
+    display: block;
+    width: 100%;
+  }
+  .fb-table tbody tr.fb-row {
+    border: 1px solid var(--color-border-muted, #e5e5e5);
+    margin-bottom: 10px;
+    padding: 4px 0;
+    background: #fff;
+  }
+  .fb-table tbody tr.fb-row td {
+    border: 0 !important;
+    padding: 6px 12px !important;
+    background: transparent !important;
+  }
+  .fb-table tbody tr.fb-row td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b6b6b;
+    margin-bottom: 2px;
+  }
+  .fb-table tbody tr td[colspan] {
+    display: block;
+    padding: 14px 12px !important;
+  }
+  .fb-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #overview-stats.fb-stat-grid > .fb-stat:last-child {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+  .tool-intro {
+    font-size: 14px;
+  }
+  #s-1 h1,
+  #s-2 h1,
+  #s-9 h1 {
+    font-size: clamp(1.6rem, 6vw, 2rem);
+  }
+}
+

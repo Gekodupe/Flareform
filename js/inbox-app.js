@@ -21,13 +21,43 @@ async function fillProjectSelect(selectId) {
   }
 }
 
+function inboxPreviewValue(v) {
+  if (v == null) return '';
+  if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+    return String(v).slice(0, 40);
+  }
+  if (Array.isArray(v)) {
+    if (!v.length) return '[]';
+    if (v.every(function (x) {
+      return x && typeof x === 'object' && (x.url || x.id);
+    })) {
+      return v.length === 1 ? '1 image' : v.length + ' images';
+    }
+    return v.length + ' items';
+  }
+  if (typeof v === 'object') return '{…}';
+  return String(v).slice(0, 40);
+}
+
 function inboxPreview(payload) {
   if (!payload || typeof payload !== 'object') return '-';
-  var keys = Object.keys(payload);
-  if (!keys.length) return '-';
-  var parts = keys.slice(0, 3).map(function (k) {
-    return k + ': ' + String(payload[k]).slice(0, 40);
+  var keys = Object.keys(payload).filter(function (k) {
+    return !String(k).startsWith('_');
   });
+  if (!keys.length) {
+    if (payload._images && Array.isArray(payload._images) && payload._images.length) {
+      return payload._images.length === 1 ? '1 image' : payload._images.length + ' images';
+    }
+    return '-';
+  }
+  var parts = keys.slice(0, 3).map(function (k) {
+    return k + ': ' + inboxPreviewValue(payload[k]);
+  });
+  if (payload._images && Array.isArray(payload._images) && payload._images.length) {
+    parts.push(
+      payload._images.length === 1 ? '1 image' : payload._images.length + ' images'
+    );
+  }
   return parts.join(' · ');
 }
 
@@ -68,17 +98,17 @@ async function inboxRefresh() {
           '" data-id="' +
           escAttr(item.id) +
           '">' +
-          '<td>' +
+          '<td data-label="When">' +
           esc(item.createdAt || '') +
           (item.readAt ? '' : ' · unread') +
           '</td>' +
-          '<td>' +
+          '<td data-label="Project">' +
           esc(item.projectName || item.projectId || '') +
           '</td>' +
-          '<td>' +
+          '<td data-label="Preview">' +
           esc(inboxPreview(item.payload)) +
           '</td>' +
-          '<td>' +
+          '<td data-label="Score">' +
           (item.isSpam ? 'spam ' : '') +
           Number(item.spamScore || 0).toFixed(2) +
           '</td>' +
@@ -102,56 +132,92 @@ function inboxSelect(id) {
   var item = inboxItems.find(function (x) {
     return x.id === id;
   });
-  var detail = document.getElementById('inbox-detail');
-  if (!item || !detail) return;
-  detail.hidden = false;
-  var meta = document.getElementById('inbox-detail-meta');
-  if (meta) {
-    meta.textContent =
-      (item.projectName || item.projectId) +
-      ' · ' +
-      (item.createdAt || '') +
-      ' · score ' +
-      Number(item.spamScore || 0).toFixed(2) +
-      (item.isSpam ? ' · spam' : '');
-  }
-  var payload = item.payload || {};
-  var images = Array.isArray(payload._images) ? payload._images : [];
-  var imagesEl = document.getElementById('inbox-detail-images');
-  if (imagesEl) {
-    if (!images.length) {
-      imagesEl.hidden = true;
-      imagesEl.innerHTML = '';
-    } else {
-      imagesEl.hidden = false;
-      imagesEl.innerHTML = '';
-      inboxRenderImages(images, imagesEl);
-    }
-  }
-  var displayPayload = Object.assign({}, payload);
-  delete displayPayload._images;
-  var pre = document.getElementById('inbox-detail-json');
-  if (pre) pre.textContent = JSON.stringify(displayPayload, null, 2);
   document.querySelectorAll('#inbox-body tr').forEach(function (tr) {
     tr.classList.toggle('selected', tr.getAttribute('data-id') === id);
   });
+  if (!item) return;
+  if (typeof fbOpenModal !== 'function') {
+    showToast('UI dialog unavailable', 'error');
+    return;
+  }
+
+  var payload = item.payload || {};
+  var images = Array.isArray(payload._images) ? payload._images : [];
+  var wrap = document.createElement('div');
+  wrap.className = 'fb-detail-content';
+
+  var meta = document.createElement('p');
+  meta.className = 'fb-modal-meta';
+  meta.textContent =
+    (item.projectName || item.projectId) +
+    ' · ' +
+    (item.createdAt || '') +
+    ' · score ' +
+    Number(item.spamScore || 0).toFixed(2) +
+    (item.isSpam ? ' · spam' : '') +
+    (item.readAt ? '' : ' · unread');
+  wrap.appendChild(meta);
+
+  var imagesEl = document.createElement('div');
+  imagesEl.className = 'fb-inbox-images';
+  imagesEl.hidden = !images.length;
+  wrap.appendChild(imagesEl);
+
+  var displayPayload = Object.assign({}, payload);
+  delete displayPayload._images;
+  var pre = document.createElement('pre');
+  pre.className = 'fb-pre';
+  pre.textContent = JSON.stringify(displayPayload, null, 2);
+  wrap.appendChild(pre);
+
+  fbOpenModal({
+    title: 'Submission',
+    body: wrap,
+    actions: [
+      {
+        label: 'Mark read',
+        primary: true,
+        onClick: function () {
+          inboxMarkRead();
+        }
+      },
+      {
+        label: 'Toggle spam',
+        className: 'secondary-btn',
+        onClick: function () {
+          inboxToggleSpam();
+        }
+      },
+      {
+        label: 'Delete',
+        className: 'fb-btn-danger',
+        onClick: function () {
+          inboxDelete();
+        }
+      }
+    ]
+  });
+
+  if (images.length) inboxRenderImages(images, imagesEl);
 }
 
 async function inboxRenderImages(images, imagesEl) {
   fbLoadSession();
+  if (imagesEl._fbBlobUrls) {
+    imagesEl._fbBlobUrls.forEach(function (u) {
+      try {
+        URL.revokeObjectURL(u);
+      } catch (e) { /* ignore */ }
+    });
+  }
+  imagesEl._fbBlobUrls = [];
+  imagesEl.textContent = '';
   for (var i = 0; i < images.length; i++) {
     var img = images[i];
     if (!img || !img.id) continue;
     var name = img.name || img.id || 'image';
     var src = '';
-    if (img.token) {
-      src =
-        fbApiBase() +
-        '/v1/files/' +
-        encodeURIComponent(img.id) +
-        '?t=' +
-        encodeURIComponent(img.token);
-    } else if (fbSession) {
+    if (fbSession) {
       try {
         var res = await fetch(fbApiBase() + '/v1/files/' + encodeURIComponent(img.id), {
           headers: { Authorization: 'Bearer ' + fbSession }
@@ -159,10 +225,18 @@ async function inboxRenderImages(images, imagesEl) {
         if (res.ok) {
           var blob = await res.blob();
           src = URL.createObjectURL(blob);
+          imagesEl._fbBlobUrls.push(src);
         }
       } catch (e) {
         src = '';
       }
+    } else if (img.token) {
+      src =
+        fbApiBase() +
+        '/v1/files/' +
+        encodeURIComponent(img.id) +
+        '?t=' +
+        encodeURIComponent(img.token);
     }
     if (!src) continue;
     var a = document.createElement('a');
@@ -211,12 +285,22 @@ async function inboxToggleSpam() {
 
 async function inboxDelete() {
   if (!inboxSelectedId) return;
-  if (!confirm('Delete this submission?')) return;
+  var ok =
+    typeof fbConfirm === 'function'
+      ? await fbConfirm('Delete this submission? This cannot be undone.', {
+          title: 'Delete submission',
+          confirmLabel: 'Delete',
+          danger: true
+        })
+      : window.confirm('Delete this submission?');
+  if (!ok) {
+    if (inboxSelectedId) inboxSelect(inboxSelectedId);
+    return;
+  }
   try {
     await fbFetch('/v1/inbox/' + inboxSelectedId, { method: 'DELETE' });
     inboxSelectedId = '';
-    var detail = document.getElementById('inbox-detail');
-    if (detail) detail.hidden = true;
+    if (typeof fbCloseModal === 'function') fbCloseModal();
     showToast('Deleted', 'success');
     await inboxRefresh();
   } catch (e) {

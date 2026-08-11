@@ -29,18 +29,22 @@ async function initOverviewTab() {
     tbody.innerHTML = rows
       .map(function (r) {
         var kind = r.kind === 'log' ? 'Log' : r.is_spam ? 'Spam' : 'Form';
+        var kindClass =
+          r.kind === 'log' ? 'fb-pill fb-pill-log' : r.is_spam ? 'fb-pill fb-pill-spam' : 'fb-pill fb-pill-form';
         return (
-          '<tr>' +
-          '<td>' +
+          '<tr class="fb-row">' +
+          '<td data-label="When">' +
           esc(r.created_at || '') +
           '</td>' +
-          '<td>' +
+          '<td data-label="Project">' +
           esc(r.project_name || r.project_id || '') +
           '</td>' +
-          '<td>' +
+          '<td data-label="Status"><span class="' +
+          kindClass +
+          '">' +
           kind +
-          '</td>' +
-          '<td>' +
+          '</span></td>' +
+          '<td data-label="Origin">' +
           esc(r.origin || '-') +
           '</td>' +
           '</tr>'
